@@ -1,0 +1,11 @@
+name: "Dotnet CI"
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: KestrelsDevelopment/.github/.github/workflows/dotnet.yml@main
+    with:
+      dotnet-version: "8.x"

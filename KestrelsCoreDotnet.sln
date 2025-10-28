@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore", "KestrelsDev.KestrelsCore\KestrelsDev.KestrelsCore.csproj", "{DFF8B6A2-037B-43B9-81E0-85703FAFAEFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.DemoProject", "KestrelsDev.KestrelsCore.DemoProject\KestrelsDev.KestrelsCore.DemoProject.csproj", "{5DBDBB3C-BFB5-4074-86F3-FF316F71B0C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFF8B6A2-037B-43B9-81E0-85703FAFAEFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFF8B6A2-037B-43B9-81E0-85703FAFAEFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFF8B6A2-037B-43B9-81E0-85703FAFAEFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFF8B6A2-037B-43B9-81E0-85703FAFAEFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DBDBB3C-BFB5-4074-86F3-FF316F71B0C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DBDBB3C-BFB5-4074-86F3-FF316F71B0C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DBDBB3C-BFB5-4074-86F3-FF316F71B0C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DBDBB3C-BFB5-4074-86F3-FF316F71B0C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
