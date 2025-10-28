@@ -1,4 +1,5 @@
 // ReSharper disable UnusedMember.Global
+
 namespace KestrelsDev.KestrelsCore.Web;
 
 public static class ServiceCollectionExtensions
