@@ -32,6 +32,7 @@ public class Result(Error? error)
 {
     public Error? Error => error;
 
+    // ReSharper disable once MemberCanBeProtected.Global
     [MemberNotNullWhen(true, nameof(Error))]
     public virtual bool IsError => Error is not null;
 

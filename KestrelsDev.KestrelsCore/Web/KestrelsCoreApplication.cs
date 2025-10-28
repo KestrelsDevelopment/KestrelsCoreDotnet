@@ -1,3 +1,4 @@
+using KestrelsDev.KestrelsCore.Configuration;
 using Serilog;
 
 namespace KestrelsDev.KestrelsCore.Web;
@@ -10,6 +11,11 @@ public static class KestrelsCoreApplication
         WebApplicationBuilder builder = WebApplication.CreateBuilder(options ?? new());
 
         builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
+
+        CoreSettings coreSettings =
+            builder.Configuration.GetSection(nameof(CoreSettings)).Get<CoreSettings.CoreSettingsModel>() ?? new();
+
+        builder.Services.AddSingleton(coreSettings);
 
         return builder;
     }
