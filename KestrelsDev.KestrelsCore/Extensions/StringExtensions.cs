@@ -10,9 +10,9 @@ public static class StringExtensions
     public static bool EqualsIgnoreCase(this string str, string other)
         => str.Equals(other, StringComparison.OrdinalIgnoreCase);
 
-    public static bool IsNullOrEmpty(this string? str) => string.IsNullOrEmpty(str);
+    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? str) => string.IsNullOrEmpty(str);
 
-    public static bool IsNullOrWhiteSpace(this string? str) => string.IsNullOrWhiteSpace(str);
+    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? str) => string.IsNullOrWhiteSpace(str);
 
     public static bool IsEmpty(this string str) => str.Length == 0;
 
@@ -57,10 +57,10 @@ public static class StringExtensions
         => bool.TryParse(str, out bool value) ? value : (Error)"Invalid format";
 
     public static Result<TimeSpan> ParseTimeSpan(this string? str, ITimeSpanParser parser)
-        => parser.TryParse(str, out TimeSpan value) ? value : (Error)"Invalid format";
+        => parser.Parse(str);
 
     public static Result<TimeSpan> ParseTimeSpan(this string? str)
-        => ITimeSpanParser.DefaultImpl.TryParse(str, out TimeSpan value) ? value : (Error)"Invalid format";
+        => ITimeSpanParser.DefaultImpl.Parse(str);
 
     public static Result<TimeSpan> ParseTimeSpan(this string? str, IFormatProvider formatProvider)
         => TimeSpan.TryParse(str, formatProvider, out TimeSpan value) ? value : (Error)"Invalid format";

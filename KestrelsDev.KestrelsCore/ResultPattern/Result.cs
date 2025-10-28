@@ -26,6 +26,12 @@ public class Result<T> : Result
     public static implicit operator Error?(Result<T> result) => result.Error;
 
     public static implicit operator T?(Result<T> result) => result.Value;
+
+    public void Deconstruct(out T? value, out Error? error)
+    {
+        value = Value;
+        error = Error;
+    }
 }
 
 public class Result(Error? error)
