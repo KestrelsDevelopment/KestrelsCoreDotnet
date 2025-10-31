@@ -8,7 +8,7 @@ public static class ServiceLocator
 
     public static readonly IServiceScope DefaultScope = CreateScope();
 
-    public static IServiceScope CreateScope() => new ServiceScope(Registration);
+    private static ServiceScope CreateScope() => new(Registration);
 
     public static TService New<TService>() => DefaultScope.New<TService>();
 
