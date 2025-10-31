@@ -1,5 +1,8 @@
 // ReSharper disable UnusedMember.Global
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 namespace KestrelsDev.KestrelsCore.Web;
 
 public static class ServiceCollectionExtensions

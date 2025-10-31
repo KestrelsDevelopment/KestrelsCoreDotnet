@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 
-namespace KestrelsDev.KestrelsCore.Extensions;
+namespace KestrelsDev.KestrelsCore.Web.Extensions;
 
 public static class LoggerExtensions
 {
