@@ -79,10 +79,26 @@ public class Result(Error? error)
         return this;
     }
 
+    public virtual Result Catch(Action<Error> action)
+    {
+        if(IsError)
+            action.Invoke(Error);
+
+        return this;
+    }
+
     public virtual Result Catch<TException>(Action<TException> action) where TException : Exception
     {
         if (Error?.Exception is TException tEx)
             action.Invoke(tEx);
+
+        return this;
+    }
+
+    public virtual Result Catch<TException>(Action<Error> action) where TException : Exception
+    {
+        if (Error?.Exception is TException tEx)
+            action.Invoke(Error);
 
         return this;
     }

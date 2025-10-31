@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.Web", "KestrelsDev.KestrelsCore.Web\KestrelsDev.KestrelsCore.Web.csproj", "{3ADCE887-42D2-41C5-BD1C-AB3774DB34B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.DependencyInjection", "KestrelsDev.KestrelsCore.DependencyInjection\KestrelsDev.KestrelsCore.DependencyInjection.csproj", "{2603E850-AEB2-4250-B685-7D6DA3DDA361}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{3ADCE887-42D2-41C5-BD1C-AB3774DB34B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ADCE887-42D2-41C5-BD1C-AB3774DB34B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ADCE887-42D2-41C5-BD1C-AB3774DB34B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2603E850-AEB2-4250-B685-7D6DA3DDA361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2603E850-AEB2-4250-B685-7D6DA3DDA361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2603E850-AEB2-4250-B685-7D6DA3DDA361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2603E850-AEB2-4250-B685-7D6DA3DDA361}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

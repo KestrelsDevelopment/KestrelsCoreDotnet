@@ -15,8 +15,12 @@ public record Error(string Message, Exception? Exception = null, object? Payload
     }
 
     public static implicit operator Error(string message) => new(message);
+    public static implicit operator Error(Exception ex) => new(ex.Message, ex);
 
     public static implicit operator string(Error error) => error.Message;
+
+    public static implicit operator Error(List<Error> errors)
+        => new AggregateError($"Multiple errors occurred, see {nameof(AggregateError.Errors)} for details.", errors);
 
     public override string ToString() => Message;
 
