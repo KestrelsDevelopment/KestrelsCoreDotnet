@@ -1,4 +1,5 @@
 // ReSharper disable MemberCanBeProtected.Global
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace KestrelsDev.KestrelsCore.ResultPattern;
@@ -10,6 +11,8 @@ public class Result<T> : Result
 
     [MemberNotNullWhen(false, nameof(Value))]
     public override bool IsError => base.IsError;
+
+    public virtual bool HasValue => !IsError;
 
     public Result(T value) : base(null)
     {
@@ -40,6 +43,10 @@ public class Result<T> : Result
     public override Result<T> Throw() => base.Throw() as Result<T> ?? this;
 
     public override Result<T> Throw<TException>() => base.Throw<TException>() as Result<T> ?? this;
+
+    public virtual TNew Map<TNew>(Func<Result<T>, TNew> func) => func.Invoke(this);
+
+    public virtual T Or(T value) => Value ?? value;
 
     public static implicit operator Result<T>(Error error) => new(error);
 
@@ -81,7 +88,7 @@ public class Result(Error? error)
 
     public virtual Result Catch(Action<Error> action)
     {
-        if(IsError)
+        if (IsError)
             action.Invoke(Error);
 
         return this;
@@ -118,6 +125,8 @@ public class Result(Error? error)
 
         return this;
     }
+
+    public virtual TNew Map<TNew>(Func<Result, TNew> func) => func.Invoke(this);
 
     public static implicit operator Result(bool success) => new(success ? null : new("Failed without message"));
 
