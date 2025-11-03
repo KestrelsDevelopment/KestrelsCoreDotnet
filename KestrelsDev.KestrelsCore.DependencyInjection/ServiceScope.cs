@@ -5,8 +5,23 @@ using KestrelsDev.KestrelsCore.ResultPattern;
 
 namespace KestrelsDev.KestrelsCore.DependencyInjection;
 
+/// <summary>
+/// Represents a scope for managing dependency injection services.
+/// </summary>
+/// <remarks>
+/// This class provides methods to resolve and manage dependencies within the current service scope.
+/// It supports creating instances, managing singletons, and validating service registrations.
+/// </remarks>
 public class ServiceScope(IServiceRegistration registration) : IServiceScope
 {
+    /// <summary>
+    /// Stores instances of singleton services within the scope of the dependency injection container.
+    /// </summary>
+    /// <remarks>
+    /// The Singletons dictionary stores already-created instances of services to ensure they are only
+    /// instantiated once during the service's lifetime within the scope. Each service type is used as
+    /// the key, and its corresponding instance is the value.
+    /// </remarks>
     private readonly Dictionary<Type, object> Singletons = [];
 
     public TService New<TService>()
@@ -68,6 +83,15 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
         return errors.Count == 0 ? true : (Error)errors;
     }
 
+    /// <summary>
+    /// Validates the ability to create an instance of the specified type within the service scope.
+    /// </summary>
+    /// <param name="type">The type of the service to be validated.</param>
+    /// <returns>
+    /// A <see cref="Result"/> indicating the success or failure of the validation.
+    /// Returns a success result if an instance of the type can be successfully created.
+    /// If validation fails due to an error, the result contains the error information.
+    /// </returns>
     private Result ValidateInternal(Type type)
     {
         MethodInfo? method = GetType().GetMethod(nameof(New));
