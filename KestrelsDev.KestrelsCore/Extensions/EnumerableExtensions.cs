@@ -21,6 +21,13 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
+    /// Merges a sequence of strings into a single concatenated string.
+    /// </summary>
+    /// <param name="enumerable">The collection of strings to merge.</param>
+    /// <returns>A single concatenated string containing all elements from the input sequence.</returns>
+    public static string Merge(this IEnumerable<string?> enumerable) => enumerable.AsString();
+
+    /// <summary>
     /// Determines whether a sequence contains no elements.
     /// </summary>
     /// <param name="enumerable">The sequence to check for emptiness.</param>
@@ -38,4 +45,12 @@ public static class EnumerableExtensions
     /// True if no elements in the sequence satisfy the condition defined by the predicate; otherwise, false.
     /// </returns>
     public static bool None<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => !enumerable.Any(predicate);
+
+    /// <summary>
+    /// Converts the elements of a sequence into a single concatenated string.
+    /// </summary>
+    /// <param name="enumerable">The sequence of elements to convert to a string.</param>
+    /// <typeparam name="T">The type of elements in the sequence.</typeparam>
+    /// <returns>A string representation of the concatenated elements in the sequence.</returns>
+    public static string AsString<T>(this IEnumerable<T> enumerable) => string.Join(null, enumerable);
 }

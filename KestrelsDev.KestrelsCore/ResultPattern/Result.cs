@@ -348,4 +348,87 @@ public class Result(Error? error)
     /// like conversions or interactions that enhance code clarity and expressiveness.
     /// </summary>
     public static implicit operator bool(Result result) => !result.IsError;
+
+    /// <summary>
+    /// Executes the given action and encapsulates its outcome in a <see cref="Result"/>.
+    /// On successful execution, a successful <see cref="Result"/> is returned.
+    /// If an exception is thrown during execution, it captures the exception details in an <see cref="Error"/> within the <see cref="Result"/>.
+    /// </summary>
+    /// <param name="action">The action to be executed, representing the operation to perform.</param>
+    /// <returns>A <see cref="Result"/> indicating the success or failure of the operation.
+    /// If an exception is thrown, the returned <see cref="Result"/> contains an <see cref="Error"/> encapsulating the exception information.</returns>
+    public static Result From(Action action)
+    {
+        try
+        {
+            action.Invoke();
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return (Error)e;
+        }
+    }
+
+    /// <summary>
+    /// Creates a Result by asynchronously executing the specified function and handling any exceptions thrown during its execution.
+    /// Converts the success or failure of the function into a Result object.
+    /// </summary>
+    /// <param name="action">The asynchronous function to execute. If the function completes successfully, the method returns a success Result. If an exception is thrown, an Error Result is returned.</param>
+    /// <returns>An asynchronous Task containing a Result. The Result represents success if the function completes without exceptions, or an Error if an exception is encountered.</returns>
+    public static async Task<Result> From(Func<Task> action)
+    {
+        try
+        {
+            await action.Invoke();
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return (Error)e;
+        }
+    }
+
+    /// <summary>
+    /// Executes a function that produces a result of type <typeparamref name="T"/> and wraps the execution
+    /// in a <see cref="Result{T}"/> object, handling any exceptions that may occur during invocation.
+    /// </summary>
+    /// <typeparam name="T">The type of the result produced by the function.</typeparam>
+    /// <param name="action">A function that returns a value of type <typeparamref name="T"/>.</param>
+    /// <returns>A <see cref="Result{T}"/> containing the value produced by the function if successful,
+    /// or an error encapsulating any exception that occurs.</returns>
+    public static Result<T> From<T>(Func<T> action)
+    {
+        try
+        {
+            return action.Invoke();
+        }
+        catch (Exception e)
+        {
+            return (Error)e;
+        }
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Result"/> that represents the outcome of an operation.
+    /// Captures any exception encountered during execution as an error.
+    /// </summary>
+    /// <param name="action">The operation to execute.</param>
+    /// <returns>
+    /// A <see cref="Result"/> indicating success if the operation completes without exception,
+    /// or an error if an exception is thrown.
+    /// </returns>
+    public static async Task<Result<T>> From<T>(Func<Task<T>> action)
+    {
+        try
+        {
+            return await action.Invoke();
+        }
+        catch (Exception e)
+        {
+            return (Error)e;
+        }
+    }
 }
