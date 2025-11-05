@@ -6,6 +6,6 @@ on:
 
 jobs:
   ci:
-    uses: KestrelsDevelopment/.github/.github/workflows/dotnet.yml@main
+    uses: KestrelsDevelopment/Workflows/.github/workflows/dotnet.yml@main
     with:
       dotnet-version: "8.x"
