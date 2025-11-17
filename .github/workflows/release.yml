@@ -1,6 +1,7 @@
 on:
   push:
     tags: [ "*.*.*" ]
+  workflow_dispatch:
 
 jobs:
   nuget:
@@ -8,7 +9,7 @@ jobs:
     with:
       version: ${{ github.ref_name }}
       dotnet_version: "8.x"
-      projects_glob: "src/**/*.csproj"
+      projects_glob: "**/*.csproj"
       exclude_glob: "**/*([Dd]emo|[Tt]est)*.csproj"
       source: "https://nuget.pkg.github.com/KestrelsDevelopment/index.json"
       run_tests: true
