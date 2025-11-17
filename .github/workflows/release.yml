@@ -9,8 +9,10 @@ jobs:
     with:
       version: ${{ github.ref_name }}
       dotnet_version: "8.x"
-      projects_glob: "**/*.csproj"
-      exclude_glob: "**/*([Dd]emo|[Tt]est)*.csproj"
+      projects_glob: "*/*.csproj"
+      exclude_globs: | 
+        */*Demo*.csproj 
+        */*Test*.csproj
       source: "https://nuget.pkg.github.com/KestrelsDevelopment/index.json"
       run_tests: true
       symbols: true
