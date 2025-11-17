@@ -1,0 +1,17 @@
+on:
+  push:
+    tags: [ "*.*.*" ]
+
+jobs:
+  nuget:
+    uses: KestrelsDevelopment/Workflows/.github/workflows/dotnet-release.yml@main
+    with:
+      version: ${{ github.ref_name }}
+      dotnet_version: "8.x"
+      projects_glob: "src/**/*.csproj"
+      exclude_glob: "**/*([Dd]emo|[Tt]est)*.csproj"
+      source: "https://nuget.pkg.github.com/KestrelsDevelopment/index.json"
+      run_tests: true
+      symbols: true
+    secrets:
+      api_key: ${{ secrets.GITHUB_TOKEN }}
