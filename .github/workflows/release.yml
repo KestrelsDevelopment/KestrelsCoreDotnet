@@ -13,8 +13,8 @@ jobs:
       exclude_globs: | 
         */*Demo*.csproj 
         */*Test*.csproj
-      source: "https://nuget.pkg.github.com/KestrelsDevelopment/index.json"
+      source: "https://nexus.kestrels.dev/repository/nuget-hosted/index.json"
       run_tests: true
       symbols: true
     secrets:
-      api_key: ${{ secrets.GITHUB_TOKEN }}
+      api_key: ${{ secrets.NEXUS_API_KEY }}
