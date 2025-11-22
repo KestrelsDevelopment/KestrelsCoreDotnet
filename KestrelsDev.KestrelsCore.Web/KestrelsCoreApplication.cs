@@ -1,4 +1,6 @@
 using KestrelsDev.KestrelsCore.Configuration;
+using KestrelsDev.KestrelsCore.Env;
+using KestrelsDev.KestrelsCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,15 @@ public static class KestrelsCoreApplication
     public static WebApplicationBuilder CreateBuilder(WebApplicationOptions? options = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(options ?? new());
+
+        DotEnv.Load($"{builder.Environment.EnvironmentName}.env");
+        DotEnv.Load(".env");
+
+        builder.Configuration
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json",
+                optional: true, reloadOnChange: false)
+            .AddEnvironmentVariables();
 
         builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
 
