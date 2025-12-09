@@ -1,10 +1,19 @@
 using KestrelsDev.KestrelsCore.Extensions;
+using KestrelsDev.KestrelsCore.Web.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KestrelsDev.KestrelsCore.EntityFramework;
+namespace KestrelsDev.KestrelsCore.Web.EntityFramework;
 
 public class KestrelsDbContext(DbContextOptions<KestrelsDbContext> options) : DbContext(options)
 {
+    public DbSet<DiagnosticsEvent.Entity> DiagnosticsEvents { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder model)
+    {
+        ConfigureDiagnosticsEventEntity(model);
+    }
+
     private readonly Dictionary<string, DbProvider> Providers = new()
     {
         { DbProvider.PostgreSql.Identifier, DbProvider.PostgreSql },
@@ -25,7 +34,7 @@ public class KestrelsDbContext(DbContextOptions<KestrelsDbContext> options) : Db
             Providers[dbProvider.Identifier] = dbProvider;
         }
 
-        if(!Providers.TryGetValue(providerIdentifier, out DbProvider? provider))
+        if (!Providers.TryGetValue(providerIdentifier, out DbProvider? provider))
             throw new ArgumentException($"Database provider \"{providerIdentifier}\" is not supported.");
 
         string connStr = provider.ConnectionStrFunc.Invoke();
@@ -33,4 +42,18 @@ public class KestrelsDbContext(DbContextOptions<KestrelsDbContext> options) : Db
     }
 
     protected virtual IEnumerable<DbProvider> AdditionalProviders => [];
+
+    protected static void ConfigureDiagnosticsEventEntity(ModelBuilder model, string tableName = "diagnostics_events")
+    {
+        EntityTypeBuilder<DiagnosticsEvent.Entity> builder = model.Entity<DiagnosticsEvent.Entity>();
+        builder.ToTable(tableName);
+
+        builder.HasKey(e => e.Id);
+
+        builder.Property(e => e.Id).HasColumnName("id").IsRequired();
+        builder.Property(e => e.ScopeId).HasColumnName("scope_id").IsRequired();
+        builder.Property(e => e.EventName).HasColumnName("event_name").IsRequired();
+        builder.Property(e => e.StartTime).HasColumnName("start_time").IsRequired();
+        builder.Property(e => e.EndTime).HasColumnName("end_time").IsRequired();
+    }
 }

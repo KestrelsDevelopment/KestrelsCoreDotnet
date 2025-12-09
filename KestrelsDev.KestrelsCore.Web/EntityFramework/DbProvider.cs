@@ -1,7 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace KestrelsDev.KestrelsCore.EntityFramework;
+namespace KestrelsDev.KestrelsCore.Web.EntityFramework;
 
 public record DbProvider(string Identifier, Func<string> ConnectionStrFunc, Action<DbContextOptionsBuilder, string> ConfigurationFunc)
 {

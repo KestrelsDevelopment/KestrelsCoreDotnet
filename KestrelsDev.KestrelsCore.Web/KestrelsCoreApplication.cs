@@ -1,6 +1,5 @@
-using KestrelsDev.KestrelsCore.Configuration;
 using KestrelsDev.KestrelsCore.Env;
-using KestrelsDev.KestrelsCore.Extensions;
+using KestrelsDev.KestrelsCore.Web.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,7 +1,7 @@
 using KestrelsDev.KestrelsCore.Extensions;
 using Serilog;
 
-namespace KestrelsDev.KestrelsCore.Configuration;
+namespace KestrelsDev.KestrelsCore.Web.Configuration;
 
 public class CoreSettings()
 {

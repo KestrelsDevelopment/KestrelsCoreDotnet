@@ -17,7 +17,6 @@ public record Error(string Message, Exception? Exception = null, object? Payload
     /// Provides additional functionality for implicit conversions and methods for error comparison.
     /// </summary>
     /// <param name="Message">The error message describing what went wrong.</param>
-    /// <param name="Exception">Optional exception that caused the error.</param>
     /// <param name="Payload">Optional additional data or context related to the error.</param>
     public Error(string Message, object Payload) : this(Message, null, Payload)
     {
