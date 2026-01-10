@@ -8,7 +8,7 @@ jobs:
     uses: KestrelsDevelopment/Workflows/.github/workflows/dotnet-release.yml@main
     with:
       version: ${{ github.ref_name }}
-      dotnet_version: "8.x"
+      dotnet_version: "10.x"
       projects_glob: "*/*.csproj"
       exclude_globs: | 
         */*Demo*.csproj 
