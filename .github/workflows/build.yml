@@ -6,6 +6,6 @@ on:
 
 jobs:
   ci:
-    uses: KestrelsDevelopment/Workflows/.github/workflows/dotnet.yml@main
+    uses: KestrelsDevelopment/Workflows/.github/workflows/dotnet-test.yml@main
     with:
       dotnet_version: "10.x"
