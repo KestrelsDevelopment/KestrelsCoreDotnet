@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore", "KestrelsDev.KestrelsCore\KestrelsDev.KestrelsCore.csproj", "{DFF8B6A2-037B-43B9-81E0-85703FAFAEFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.DemoProject", "KestrelsDev.KestrelsCore.DemoProject\KestrelsDev.KestrelsCore.DemoProject.csproj", "{5DBDBB3C-BFB5-4074-86F3-FF316F71B0C9}"
@@ -7,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.Web", "KestrelsDev.KestrelsCore.Web\KestrelsDev.KestrelsCore.Web.csproj", "{3ADCE887-42D2-41C5-BD1C-AB3774DB34B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.DependencyInjection", "KestrelsDev.KestrelsCore.DependencyInjection\KestrelsDev.KestrelsCore.DependencyInjection.csproj", "{2603E850-AEB2-4250-B685-7D6DA3DDA361}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KestrelsDev.KestrelsCore.Tests", "KestrelsDev.KestrelsCore.Tests\KestrelsDev.KestrelsCore.Tests.csproj", "{AE9D07C3-8D27-45C7-9414-87646E7753ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +35,15 @@ Global
 		{2603E850-AEB2-4250-B685-7D6DA3DDA361}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2603E850-AEB2-4250-B685-7D6DA3DDA361}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2603E850-AEB2-4250-B685-7D6DA3DDA361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE9D07C3-8D27-45C7-9414-87646E7753ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE9D07C3-8D27-45C7-9414-87646E7753ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE9D07C3-8D27-45C7-9414-87646E7753ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE9D07C3-8D27-45C7-9414-87646E7753ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4DB2757D-7039-4981-A3A9-C8B8D3A45A79}
 	EndGlobalSection
 EndGlobal
