@@ -2,3 +2,6 @@
 .idea/
 obj/
 bin/
+
+*.csproj.user
+**/TestResults/
