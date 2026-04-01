@@ -30,8 +30,7 @@ public class DefaultTimeSpanParser : ITimeSpanParser
 
     public Result<TimeSpan> Parse(string? s)
     {
-        if (s.IsNullOrWhiteSpace())
-            return (Error)"String is empty";
+        s ??= "";
 
         if (TimeSpan.TryParse(s, out TimeSpan value))
             return value;
