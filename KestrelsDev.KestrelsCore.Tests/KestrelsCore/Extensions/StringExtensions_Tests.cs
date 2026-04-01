@@ -3,7 +3,7 @@
 public class StringExtensions_Tests
 {
     [Test]
-    public async Task Result_HasTests()
+    public async Task StringExtensions_HasTests()
     {
         Assert.Fail("No tests defined");
     }
