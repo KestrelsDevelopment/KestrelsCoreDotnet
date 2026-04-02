@@ -6,9 +6,9 @@ namespace KestrelsDev.KestrelsCore.DependencyInjection;
 
 public class ServiceScope(IServiceRegistration registration) : IServiceScope
 {
-    private IServiceScope? _parentScope;
+    private readonly IServiceScope? _parentScope;
 
-    private Dictionary<Type, Dictionary<object, object>> _instances = [];
+    private readonly Dictionary<Type, Dictionary<object, object>> _instances = [];
 
     private ServiceScope(IServiceRegistration registration, IServiceScope parentScope) : this(registration)
     {
