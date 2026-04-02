@@ -29,6 +29,9 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
 
     public object GetKeyed(Type serviceType, object key)
     {
+        if (serviceType.IsAssignableTo(typeof(IServiceScope)))
+            return this;
+
         // Get registration
         RegisteredService? service = registration.GetKeyedDefinition(serviceType, key);
 
