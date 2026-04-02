@@ -1,5 +1,3 @@
-using KestrelsDev.KestrelsCore.Web.Diagnostics;
-using KestrelsDev.KestrelsCore.Web.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -113,20 +111,6 @@ public static class ServiceCollectionExtensions
         {
             services.AddSingleton(instance);
             services.AddHostedService(p => p.GetRequiredService<TService>());
-
-            return services;
-        }
-
-        #endregion
-
-        #region Diagnostics Service
-
-        public IServiceCollection AddDiagnostics<TDbContext>()
-            where TDbContext : KestrelsDbContext
-        {
-            services.AddHostedSingleton<IDiagnosticsCollectorService, DiagnosticsCollectorService<TDbContext>>();
-            services.AddScoped(_ => new DiagnosticsScope());
-            services.AddScoped<IDiagnosticsService, DiagnosticsService>();
 
             return services;
         }

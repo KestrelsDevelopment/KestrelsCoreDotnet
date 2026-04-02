@@ -1,6 +1,4 @@
-using KestrelsDev.KestrelsCore.Web.Diagnostics;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace KestrelsDev.KestrelsCore.Web;
 
@@ -18,11 +16,6 @@ public static class WebApplicationExtensions
 
         public WebApplication UseDiagnostics()
         {
-            using IServiceScope scope = app.Services.CreateScope();
-            _ = scope.ServiceProvider.GetRequiredService<IDiagnosticsService>();
-
-            app.UseMiddleware<DiagnosticsMiddleware>();
-
             return app;
         }
     }
