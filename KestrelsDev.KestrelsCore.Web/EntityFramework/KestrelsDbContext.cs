@@ -1,37 +1,48 @@
-using KestrelsDev.KestrelsCore.Extensions;
+using KestrelsDev.KestrelsCore.Web.EntityFramework.Providers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KestrelsDev.KestrelsCore.Web.EntityFramework;
 
-public class KestrelsDbContext(DbContextOptions<KestrelsDbContext> options) : DbContext(options)
+public abstract class KestrelsDbContext(DbContextOptions<KestrelsDbContext> options) : DbContext(options)
 {
-    private readonly Dictionary<string, DbProvider> Providers = new()
+    private readonly Dictionary<string, IDbProvider> Providers = [];
+
+    private static Dictionary<Type, IDbProvider> CachedDbProviders = [];
+
+    private void AddDbProvider(IDbProvider provider)
     {
-        { DbProvider.PostgreSql.Identifier, DbProvider.PostgreSql },
-        { DbProvider.Sqlite.Identifier, DbProvider.Sqlite }
-    };
+        Providers[provider.Identifier] = provider;
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
 
-        string? providerIdentifier = Environment.GetEnvironmentVariable("DB_PROVIDER");
-
-        if (providerIdentifier.IsNullOrWhiteSpace())
-            throw new ArgumentException("DB_PROVIDER environment variable must be set.");
-
-        foreach (DbProvider dbProvider in AdditionalProviders)
+        if (CachedDbProviders.TryGetValue(GetType(), out IDbProvider? provider))
         {
-            Providers[dbProvider.Identifier] = dbProvider;
+            provider.Configure(optionsBuilder, Prefix);
+            return;
         }
 
-        if (!Providers.TryGetValue(providerIdentifier, out DbProvider? provider))
-            throw new ArgumentException($"Database provider \"{providerIdentifier}\" is not supported.");
+        AddDbProvider(new SqliteDbProvider());
+        AddDbProvider(new PostgresqlDbProdiver());
 
-        string connStr = provider.ConnectionStrFunc.Invoke();
-        provider.ConfigurationFunc.Invoke(optionsBuilder, connStr);
+        foreach (IDbProvider dbProvider in AdditionalProviders)
+            AddDbProvider(dbProvider);
+
+        foreach (IDbProvider dbProvider in Providers.Values.OrderBy(p => p.Priority))
+        {
+            if (dbProvider.Configure(optionsBuilder, Prefix))
+            {
+                CachedDbProviders[GetType()] = dbProvider;
+                return;
+            }
+        }
+
+        throw new InvalidOperationException($"Failed to configure a database provider (tried {Providers.Count})");
     }
 
-    protected virtual IEnumerable<DbProvider> AdditionalProviders => [];
+    protected virtual IEnumerable<IDbProvider> AdditionalProviders => [];
+
+    protected virtual string Prefix => "";
 }
