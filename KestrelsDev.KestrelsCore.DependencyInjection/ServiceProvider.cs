@@ -5,7 +5,7 @@ namespace KestrelsDev.KestrelsCore.DependencyInjection;
 /// <summary>
 /// Holds static references to a global <see cref="IServiceRegistration"/> and <see cref="IServiceScope"/>.
 /// </summary>
-public static class ServiceLocator
+public static class ServiceProvider
 {
     /// <summary>
     /// The default global <see cref="IServiceRegistration"/>.
