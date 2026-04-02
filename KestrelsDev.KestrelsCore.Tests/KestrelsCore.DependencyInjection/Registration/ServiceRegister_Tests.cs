@@ -31,17 +31,6 @@ public class ServiceRegister_Tests
     }
 
     [Test]
-    public async Task Add__NoKey__AddsWithEmptyString()
-    {
-        RegisteredService service = RandomService;
-        ServiceRegister register = [];
-
-        register.Add(service);
-
-        await Assert.That(register[typeof(DummyType1)][""]).EqualTo(service);
-    }
-
-    [Test]
     public async Task Add__WithKey__AddsWithKey()
     {
         RegisteredService service = RandomService;

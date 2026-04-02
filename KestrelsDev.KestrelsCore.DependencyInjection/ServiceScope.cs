@@ -22,7 +22,17 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
         throw new NotImplementedException();
     }
 
+    public object Get(Type serviceType)
+    {
+        throw new NotImplementedException();
+    }
+
     public TService GetKeyed<TService>(object key)
+    {
+        throw new NotImplementedException();
+    }
+
+    public object GetKeyed(Type serviceType, object key)
     {
         throw new NotImplementedException();
     }
@@ -32,7 +42,17 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
         throw new NotImplementedException();
     }
 
+    public Result<object> TryGet(Type serviceType)
+    {
+        throw new NotImplementedException();
+    }
+
     public Result<TService> TryGetKeyed<TService>(object key)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Result<object> TryGetKeyed(Type serviceType, object key)
     {
         throw new NotImplementedException();
     }

@@ -21,9 +21,6 @@ public class ServiceRegister() : Dictionary<Type, ServiceRegister.ServiceKeyRegi
         return null;
     }
 
-    public void Add(RegisteredService service)
-        => Add(service, string.Empty);
-
     public void Add(RegisteredService service, object key)
     {
         if (!TryGetValue(service.ServiceType, out ServiceKeyRegister? keyRegister))
@@ -32,7 +29,7 @@ public class ServiceRegister() : Dictionary<Type, ServiceRegister.ServiceKeyRegi
             this[service.ServiceType] = keyRegister;
         }
 
-        keyRegister.Add(key, service);
+        keyRegister[key] = service;
     }
 
     public class ServiceKeyRegister() : Dictionary<object, RegisteredService>
