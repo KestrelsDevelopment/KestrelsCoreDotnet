@@ -1,5 +1,8 @@
 ﻿namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 
-public struct RegisteredService
+public readonly struct RegisteredService
 {
+    public required Type ServiceType { get; init; }
+    public required InjectionType InjectionType { get; init; }
+    public required Func<IServiceScope, object> Factory { get; init; }
 }

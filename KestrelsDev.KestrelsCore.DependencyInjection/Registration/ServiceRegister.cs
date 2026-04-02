@@ -1,12 +1,12 @@
 ﻿namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 
-public class ServiceRegister : Dictionary<Type, ServiceRegister.ServiceKeyRegister>
+public class ServiceRegister() : Dictionary<Type, ServiceRegister.ServiceKeyRegister>
 {
-    public ServiceRegister(ServiceRegister other)
+    public ServiceRegister(ServiceRegister other) : this()
     {
         foreach (KeyValuePair<Type, ServiceKeyRegister> kvp in other)
         {
-            this[kvp.Key] = kvp.Value;
+            this[kvp.Key] = new(kvp.Value);
         }
     }
 
@@ -21,9 +21,23 @@ public class ServiceRegister : Dictionary<Type, ServiceRegister.ServiceKeyRegist
         return null;
     }
 
-    public class ServiceKeyRegister : Dictionary<object, RegisteredService>
+    public void Add(RegisteredService service)
+        => Add(service, string.Empty);
+
+    public void Add(RegisteredService service, object key)
     {
-        public ServiceKeyRegister(ServiceKeyRegister other)
+        if (!TryGetValue(service.ServiceType, out ServiceKeyRegister? keyRegister))
+        {
+            keyRegister = [];
+            this[service.ServiceType] = keyRegister;
+        }
+
+        keyRegister.Add(key, service);
+    }
+
+    public class ServiceKeyRegister() : Dictionary<object, RegisteredService>
+    {
+        public ServiceKeyRegister(ServiceKeyRegister other) : this()
         {
             foreach (KeyValuePair<object, RegisteredService> kvp in other)
             {
