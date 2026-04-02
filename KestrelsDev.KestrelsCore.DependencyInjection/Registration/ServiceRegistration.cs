@@ -1,58 +1,68 @@
-using System.Collections.ObjectModel;
+﻿namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 
-namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
-
-/// <summary>
-/// Provides an implementation of the <see cref="IServiceRegistration"/> interface
-/// for registering service types with their concrete implementations or instances.
-/// Enables dependency injection by acting as a registration mechanism for
-/// services and their corresponding factories or singleton instances.
-/// </summary>
-public class ServiceRegistration : IServiceRegistration
+public class ServiceRegistration() : IServiceRegistration
 {
-    public ReadOnlyDictionary<Type, object> Registrations => new(RegistrationsInternal);
+    public ServiceRegister Registration => throw new NotImplementedException();
 
-    private readonly Dictionary<Type, object> RegistrationsInternal = [];
+    public ServiceRegistration(ServiceRegistration other) : this() { }
 
-    public IServiceRegistration Add<TService, TImpl>() where TImpl : TService, new()
-        => AddInternal<TService>(typeof(TImpl));
-
-    public IServiceRegistration Add<TService>() where TService : new()
-        => AddInternal<TService>(typeof(TService));
-
-    public IServiceRegistration Add<TService, TImpl>(TImpl singleton) where TImpl : TService
-        => AddInternal<TService>(singleton);
-
-    public IServiceRegistration Add<TService>(TService singleton)
-        => AddInternal<TService>(singleton);
-
-    public IServiceRegistration Add<TService, TImpl>(Func<TImpl> factory) where TImpl : TService
-        => AddInternal<TService>(factory);
-
-    public IServiceRegistration Add<TService>(Func<TService> factory)
-        => AddInternal<TService>(factory);
-
-    /// <summary>
-    /// Adds a service registration for the specified service type <typeparamref name="TService"/>
-    /// with the provided implementation or factory method.
-    /// Ensures that the service is registered with the corresponding implementation details
-    /// in the internal registration dictionary.
-    /// </summary>
-    /// <typeparam name="TService">The type of the service being registered.</typeparam>
-    /// <param name="value">
-    /// An object representing either the implementation type, a singleton instance,
-    /// or a factory delegate for creating instances of the service.
-    /// </param>
-    /// <returns>
-    /// The current instance of <see cref="ServiceRegistration"/>, enabling fluent API style chaining.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when the provided <paramref name="value"/> is null.
-    /// </exception>
-    private ServiceRegistration AddInternal<TService>(object? value)
+    public void Add<TService>(TService instance)
     {
-        RegistrationsInternal[typeof(TService)] = value ?? throw new ArgumentNullException(nameof(value));
+        throw new NotImplementedException();
+    }
 
-        return this;
+    public void Add<TService, TImpl>(TImpl instance) where TImpl : TService
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Add<TService>(Func<IServiceScope, TService> factory, InjectionType injectionType = InjectionType.Transient)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Add<TService, TImpl>(Func<IServiceScope, TImpl> factory, InjectionType injectionType = InjectionType.Transient) where TImpl : TService
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Add<TService>(InjectionType injectionType = InjectionType.Transient)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Add<TService, TImpl>(InjectionType injectionType = InjectionType.Transient) where TImpl : TService
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddKeyed<TService>(TService instance, object key)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddKeyed<TService, TImpl>(TImpl instance, object key) where TImpl : TService
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddKeyed<TService>(Func<IServiceScope, TService> factory, object key, InjectionType injectionType = InjectionType.Transient)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddKeyed<TService, TImpl>(Func<IServiceScope, TImpl> factory, object key, InjectionType injectionType = InjectionType.Transient) where TImpl : TService
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddKeyed<TService>(object key, InjectionType injectionType = InjectionType.Transient)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddKeyed<TService, TImpl>(object key, InjectionType injectionType = InjectionType.Transient) where TImpl : TService
+    {
+        throw new NotImplementedException();
     }
 }
