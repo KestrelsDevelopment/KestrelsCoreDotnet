@@ -88,37 +88,99 @@ public class ServiceScope_Tests
     [Test]
     public async Task Get__TransientService__NewInstanceEachTime()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.Add<Service>();
+
+        Service first = scope.Get<Service>();
+        Service second = scope.Get<Service>();
+
+        await Assert.That(first).IsNotSameReferenceAs(second);
     }
 
     [Test]
     public async Task Get__ScopedService__NewInstanceForEachScope()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.Add<Service>();
+
+        IServiceScope childScope = scope.CreateChildScope();
+
+        Service first = scope.Get<Service>();
+        Service second = scope.Get<Service>();
+        Service child = childScope.Get<Service>();
+
+        await Assert.That(first).IsSameReferenceAs(second);
+        await Assert.That(first).IsNotSameReferenceAs(child);
     }
 
     [Test]
     public async Task Get__SingletonService__OneInstance()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.Add<Service>();
+
+        IServiceScope childScope = scope.CreateChildScope();
+        ServiceScope otherScope = new(registration);
+
+        Service original = scope.Get<Service>();
+        Service child = childScope.Get<Service>();
+        Service other = otherScope.Get<Service>();
+
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsNotSameReferenceAs(other);
     }
 
     [Test]
     public async Task TryGet__TransientService__NewInstanceEachTime()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.Add<Service>();
+
+        Service? first = scope.TryGet<Service>();
+        Service? second = scope.TryGet<Service>();
+
+        await Assert.That(first).IsNotSameReferenceAs(second);
     }
 
     [Test]
     public async Task TryGet__ScopedService__NewInstanceForEachScope()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.Add<Service>();
+
+        IServiceScope childScope = scope.CreateChildScope();
+
+        Service? first = scope.TryGet<Service>();
+        Service? second = scope.TryGet<Service>();
+        Service? child = childScope.TryGet<Service>();
+
+        await Assert.That(first).IsSameReferenceAs(second);
+        await Assert.That(first).IsNotSameReferenceAs(child);
     }
 
     [Test]
     public async Task TryGet__SingletonService__OneInstancePerScopeTree()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.Add<Service>();
+
+        IServiceScope childScope = scope.CreateChildScope();
+        ServiceScope otherScope = new(registration);
+
+        Service? original = scope.TryGet<Service>();
+        Service? child = childScope.TryGet<Service>();
+        Service? other = otherScope.TryGet<Service>();
+
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsNotSameReferenceAs(other);
     }
 
     [Test]
@@ -190,42 +252,114 @@ public class ServiceScope_Tests
     [Test]
     public async Task GetKeyed__TransientService__NewInstanceEachTime()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.AddKeyed<Service>(Key);
+
+        Service first = scope.GetKeyed<Service>(Key);
+        Service second = scope.GetKeyed<Service>(Key);
+
+        await Assert.That(first).IsNotSameReferenceAs(second);
     }
 
     [Test]
     public async Task GetKeyed__ScopedService__NewInstanceForEachScope()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.AddKeyed<Service>(Key);
+
+        IServiceScope childScope = scope.CreateChildScope();
+
+        Service first = scope.GetKeyed<Service>(Key);
+        Service second = scope.GetKeyed<Service>(Key);
+        Service child = childScope.GetKeyed<Service>(Key);
+
+        await Assert.That(first).IsSameReferenceAs(second);
+        await Assert.That(first).IsNotSameReferenceAs(child);
     }
 
     [Test]
     public async Task GetKeyed__SingletonService__OneInstance()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.AddKeyed<Service>(Key);
+
+        IServiceScope childScope = scope.CreateChildScope();
+        ServiceScope otherScope = new(registration);
+
+        Service original = scope.GetKeyed<Service>(Key);
+        Service child = childScope.GetKeyed<Service>(Key);
+        Service other = otherScope.GetKeyed<Service>(Key);
+
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsNotSameReferenceAs(other);
     }
 
     [Test]
     public async Task TryGetKeyed__TransientService__NewInstanceEachTime()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.AddKeyed<Service>(Key);
+
+        Service? first = scope.TryGetKeyed<Service>(Key);
+        Service? second = scope.TryGetKeyed<Service>(Key);
+
+        await Assert.That(first).IsNotSameReferenceAs(second);
     }
 
     [Test]
     public async Task TryGetKeyed__ScopedService__NewInstanceForEachScope()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.AddKeyed<Service>(Key);
+
+        IServiceScope childScope = scope.CreateChildScope();
+
+        Service? first = scope.TryGetKeyed<Service>(Key);
+        Service? second = scope.TryGetKeyed<Service>(Key);
+        Service? child = childScope.TryGetKeyed<Service>(Key);
+
+        await Assert.That(first).IsSameReferenceAs(second);
+        await Assert.That(first).IsNotSameReferenceAs(child);
     }
 
     [Test]
     public async Task TryGetKeyed__SingletonService__OneInstancePerScopeTree()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        registration.AddKeyed<Service>(Key);
+
+        IServiceScope childScope = scope.CreateChildScope();
+        ServiceScope otherScope = new(registration);
+
+        Service? original = scope.TryGetKeyed<Service>(Key);
+        Service? child = childScope.TryGetKeyed<Service>(Key);
+        Service? other = otherScope.TryGetKeyed<Service>(Key);
+
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsSameReferenceAs(child);
+        await Assert.That(original).IsNotSameReferenceAs(other);
     }
 
     [Test]
     public async Task CreateChildScope__CreatesScopeWithSameRegistration()
     {
-        Assert.Fail("");
+        ServiceRegistration registration = new();
+        ServiceScope scope = new(registration);
+        Service instance = new();
+        registration.Add(instance);
+
+        IServiceScope childScope = scope.CreateChildScope();
+
+        Service? original = scope.Get<Service>();
+        Service? child = childScope.Get<Service>();
+
+        await Assert.That(original).IsSameReferenceAs(child);
     }
 }
