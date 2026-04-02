@@ -2,7 +2,7 @@
 
 public interface IServiceRegistration
 {
-    public ServiceRegister Registration { get; }
+    public ServiceRegister Register { get; }
     public void Add<TService>(TService instance)
         where TService : class;
     public void Add<TService, TImpl>(TImpl instance) 

@@ -21,6 +21,13 @@ public class ServiceRegistration_Tests
     [Test]
     public async Task Constructor__WithOther__CreatesClone()
     {
+        ServiceRegistration original = new();
+        original.Add<Service>();
+
+        ServiceRegistration clone = new(original);
+
+        await Assert.That(clone.GetDefinition(ImplType)).EqualTo(original.GetDefinition(ImplType));
+        await Assert.That(clone.Register.Count).EqualTo(original.Register.Count);
     }
 
     [Test]
@@ -223,13 +230,13 @@ public class ServiceRegistration_Tests
         ServiceRegistration registration = new();
         registration.AddKeyed(InitialInstance, Key);
 
-        registration.AddKeyed(s => Instance, Key);
+        registration.AddKeyed(s => Instance, Key, injectionType);
 
         RegisteredService? registered = registration.GetKeyedDefinition(ImplType, Key);
         object? created = registered?.Factory(Scope);
 
         await Assert.That(created).IsSameReferenceAs(Instance);
-        await Assert.That(registered?.InjectionType).EqualTo(InjectionType.Singleton);
+        await Assert.That(registered?.InjectionType).EqualTo(injectionType);
         await Assert.That(created).IsNotSameReferenceAs(InitialInstance);
     }
 
@@ -242,13 +249,13 @@ public class ServiceRegistration_Tests
         ServiceRegistration registration = new();
         registration.AddKeyed<IService>(InitialInstance, Key);
 
-        registration.AddKeyed<IService>(s => Instance, Key);
+        registration.AddKeyed<IService>(s => Instance, Key, injectionType);
 
         RegisteredService? registered = registration.GetKeyedDefinition(IFaceType, Key);
         object? created = registered?.Factory(Scope);
 
         await Assert.That(created).IsSameReferenceAs(Instance);
-        await Assert.That(registered?.InjectionType).EqualTo(InjectionType.Singleton);
+        await Assert.That(registered?.InjectionType).EqualTo(injectionType);
         await Assert.That(created).IsNotSameReferenceAs(InitialInstance);
     }
 

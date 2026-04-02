@@ -5,12 +5,15 @@ namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 
 public class ServiceRegistration() : IServiceRegistration
 {
-    public ServiceRegister Registration => new(_registration);
-    private ServiceRegister _registration = [];
+    public ServiceRegister Register => new(_register);
+    private ServiceRegister _register = [];
 
-    public ServiceRegistration(ServiceRegistration other) : this() { }
+    public ServiceRegistration(ServiceRegistration other) : this()
+    {
+        _register = other._register;
+    }
 
-    public void Add<TService>(TService instance) 
+    public void Add<TService>(TService instance)
         where TService : class
         => AddInternal(typeof(TService), s => instance, InjectionType.Singleton);
 
@@ -32,7 +35,34 @@ public class ServiceRegistration() : IServiceRegistration
         where TService : class
         => Add<TService, TService>(injectionType);
 
-    public void Add<TService, TImpl>(InjectionType injectionType = InjectionType.Transient) 
+    public void Add<TService, TImpl>(InjectionType injectionType = InjectionType.Transient)
+        where TImpl : TService
+        where TService : class
+        => AddKeyed<TService, TImpl>("", injectionType);
+
+    public void AddKeyed<TService>(TService instance, object key)
+        where TService : class
+        => AddKeyedInternal(typeof(TService), s => instance, InjectionType.Singleton, key);
+
+    public void AddKeyed<TService, TImpl>(TImpl instance, object key)
+        where TImpl : TService
+        where TService : class
+        => AddKeyedInternal(typeof(TService), s => instance, InjectionType.Singleton, key);
+
+    public void AddKeyed<TService>(Func<IServiceScope, TService> factory, object key, InjectionType injectionType = InjectionType.Transient)
+        where TService : class
+        => AddKeyedInternal(typeof(TService), s => factory(s), injectionType, key);
+
+    public void AddKeyed<TService, TImpl>(Func<IServiceScope, TImpl> factory, object key, InjectionType injectionType = InjectionType.Transient)
+        where TImpl : TService
+        where TService : class
+        => AddKeyedInternal(typeof(TService), s => factory(s), injectionType, key);
+
+    public void AddKeyed<TService>(object key, InjectionType injectionType = InjectionType.Transient)
+        where TService : class
+        => AddKeyed<TService, TService>(key, injectionType);
+
+    public void AddKeyed<TService, TImpl>(object key, InjectionType injectionType = InjectionType.Transient)
         where TImpl : TService
         where TService : class
     {
@@ -52,53 +82,14 @@ public class ServiceRegistration() : IServiceRegistration
             return constructed;
         }
 
-        AddInternal(typeof(TService), factory, injectionType);
-    }
-
-    public void AddKeyed<TService>(TService instance, object key)
-        where TService : class
-    {
-        throw new NotImplementedException();
-    }
-
-    public void AddKeyed<TService, TImpl>(TImpl instance, object key) 
-        where TImpl : TService
-        where TService : class
-    {
-        throw new NotImplementedException();
-    }
-
-    public void AddKeyed<TService>(Func<IServiceScope, TService> factory, object key, InjectionType injectionType = InjectionType.Transient)
-        where TService : class
-    {
-        throw new NotImplementedException();
-    }
-
-    public void AddKeyed<TService, TImpl>(Func<IServiceScope, TImpl> factory, object key, InjectionType injectionType = InjectionType.Transient) 
-        where TImpl : TService
-        where TService : class
-    {
-        throw new NotImplementedException();
-    }
-
-    public void AddKeyed<TService>(object key, InjectionType injectionType = InjectionType.Transient)
-        where TService : class
-    {
-        throw new NotImplementedException();
-    }
-
-    public void AddKeyed<TService, TImpl>(object key, InjectionType injectionType = InjectionType.Transient) 
-        where TImpl : TService
-        where TService : class
-    {
-        throw new NotImplementedException();
+        AddKeyedInternal(typeof(TService), factory, injectionType, key);
     }
 
     public RegisteredService? GetDefinition(Type type)
-        => Registration.Get(type);
+        => Register.Get(type);
 
     public RegisteredService? GetKeyedDefinition(Type type, object key)
-        => Registration.Get(type, key);
+        => Register.Get(type, key);
 
     private void AddInternal(Type serviceType, Func<IServiceScope, object> factory, InjectionType injectionType)
         => AddKeyedInternal(serviceType, factory, injectionType, string.Empty);
@@ -106,6 +97,6 @@ public class ServiceRegistration() : IServiceRegistration
     private void AddKeyedInternal(Type serviceType, Func<IServiceScope, object> factory, InjectionType injectionType, object key)
     {
         RegisteredService service = new() { ServiceType = serviceType, Factory = factory, InjectionType = injectionType };
-        _registration.Add(service, key);
+        _register.Add(service, key);
     }
 }
