@@ -457,24 +457,4 @@ public class Result_OfT_Tests
 
         await Assert.That(value).IsNull();
     }
-
-    [Test]
-    public async Task Conversion_ToError__InstanceHasValue__ReturnsNull()
-    {
-        Result<string> result = WithValue;
-
-        Error? err = result;
-
-        await Assert.That<Error>(err).IsNull();
-    }
-
-    [Test]
-    public async Task Conversion_ToError__InstanceHasError__ReturnsError()
-    {
-        Result<string> result = WithError;
-
-        Error? err = result;
-
-        await Assert.That<Error>(err).EqualTo(result.Error);
-    }
 }

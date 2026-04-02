@@ -158,13 +158,6 @@ public class Result<T> : Result
     public static implicit operator Result<T>(T value) => new(value);
 
     /// <summary>
-    /// Defines a custom operator for a type. This operator allows implicit conversion from a result instance
-    /// of a given type to an <see cref="Error"/> type, facilitating seamless access to error details when
-    /// an operation result represents a failure.
-    /// </summary>
-    public static implicit operator Error?(Result<T> result) => result.Error;
-
-    /// <summary>
     /// Defines a custom conversion operator allowing a <see cref="Result{T}"/> to be implicitly cast to its contained value of type <typeparamref name="T"/>.
     /// This provides a convenient way to extract the value when the result is successful, while abstracting the error handling.
     /// </summary>
@@ -327,7 +320,8 @@ public class Result(Error? error)
     /// <typeparam name="TNew">The type to which the current <see cref="Result"/> instance will be mapped.</typeparam>
     /// <param name="func">The mapping function that takes the current <see cref="Result"/> instance and returns a value of type <typeparamref name="TNew"/>.</param>
     /// <returns>A value of type <typeparamref name="TNew"/> produced by applying the mapping function to the current <see cref="Result"/> instance.</returns>
-    public virtual TNew Map<TNew>(Func<Result, TNew> func) => func.Invoke(this);
+    public virtual TNew Map<TNew>(Func<TNew> mapSuccess, Func<Error, TNew> mapError)
+        => IsError ? mapError(Error) : mapSuccess();
 
     /// <summary>
     /// Defines a custom operator for the Result class, enabling implicit conversion
@@ -356,6 +350,8 @@ public class Result(Error? error)
     /// like conversions or interactions that enhance code clarity and expressiveness.
     /// </summary>
     public static implicit operator bool(Result result) => !result.IsError;
+
+    public static implicit operator Error?(Result result) => result.Error;
 
     /// <summary>
     /// Executes the given action and encapsulates its outcome in a <see cref="Result"/>.

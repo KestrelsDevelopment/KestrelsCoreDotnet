@@ -50,18 +50,6 @@ public record Error(string Message, Exception? Exception = null, object? Payload
     public static implicit operator string(Error error) => error.Message;
 
     /// <summary>
-    /// Defines a custom implicit conversion for the <see cref="Error"/> type.
-    /// Allows seamless conversion between <see cref="Error"/> instances and other data types or entities.
-    /// </summary>
-    /// <param name="errors">A collection of <see cref="Error"/> instances to aggregate into a single error object.</param>
-    /// <returns>
-    /// An <see cref="Error"/> object representing the aggregate of all provided errors.
-    /// Typically used to consolidate multiple errors into a unified representation.
-    /// </returns>
-    public static implicit operator Error(List<Error> errors)
-        => (AggregateError)errors;
-
-    /// <summary>
     /// Returns a string that represents the current error.
     /// </summary>
     /// <returns>The error message contained within the Error instance.</returns>
