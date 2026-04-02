@@ -15,6 +15,11 @@ public static class DotEnv
 
         string[] lines = File.ReadAllLines(path);
 
+        return Load(lines, overwriteExisting);
+    }
+
+    public static Result Load(IEnumerable<string> lines, bool overwriteExisting = false)
+    {
         foreach (string line in lines)
             LoadLine(line, overwriteExisting);
 
@@ -31,17 +36,14 @@ public static class DotEnv
         string key = match.Groups[1].Value.Trim();
         string value = match.Groups[2].Value.Trim();
 
-        if(Environment.GetEnvironmentVariable(key).IsNullOrWhiteSpace() && !overwriteExisting)
+        if (!Environment.GetEnvironmentVariable(key).IsNullOrWhiteSpace() && !overwriteExisting)
             return;
 
-        match = value.Match("\"(.+)\".*");
+        match = value.Match("\"(.*)\".*");
 
         value = !match.Success || match.Groups.Count < 2
             ? value.Split('#').FirstOrDefault("").Trim()
             : match.Groups[1].Value;
-
-        if (value.IsNullOrWhiteSpace())
-            return;
 
         Environment.SetEnvironmentVariable(key, value);
     }

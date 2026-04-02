@@ -13,7 +13,7 @@ namespace KestrelsDev.KestrelsCore.Parsers;
 /// .NET <see cref="TimeSpan"/> formats and custom formats by extracting and processing
 /// components from the input string.
 /// </remarks>
-public class DefaultTimeSpanParser : ITimeSpanParser
+public class DefaultTimeSpanParser(IFormatProvider? formatProvider = null) : ITimeSpanParser
 {
     public bool TryParse(string? s, out TimeSpan value)
     {
@@ -30,10 +30,9 @@ public class DefaultTimeSpanParser : ITimeSpanParser
 
     public Result<TimeSpan> Parse(string? s)
     {
-        if (s.IsNullOrWhiteSpace())
-            return (Error)"String is empty";
+        s ??= "";
 
-        if (TimeSpan.TryParse(s, out TimeSpan value))
+        if (TimeSpan.TryParse(s, formatProvider, out TimeSpan value))
             return value;
 
         s = s.Trim().Replace(" ", string.Empty);

@@ -36,22 +36,6 @@ public static class StringExtensions
     public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? str) => string.IsNullOrWhiteSpace(str);
 
     /// <summary>
-    /// Determines whether the specified string is empty.
-    /// </summary>
-    /// <param name="str">The string to check.</param>
-    /// <returns>True if the string is empty; otherwise, false.</returns>
-    public static bool IsEmpty(this string str) => str.Length == 0;
-
-    /// <summary>
-    /// Determines whether the specified string is empty or consists solely of whitespace characters.
-    /// </summary>
-    /// <param name="str">The input string to evaluate.</param>
-    /// <returns>
-    /// True if the string is empty or consists only of whitespace characters; otherwise, false.
-    /// </returns>
-    public static bool IsEmptyOrWhiteSpace(this string str) => str.Length == 0 || str.Trim().Length == 0;
-
-    /// <summary>
     /// Determines whether the specified input string matches the provided regular expression pattern.
     /// </summary>
     /// <param name="str">The input string to test against the regular expression pattern.</param>
@@ -185,15 +169,6 @@ public static class StringExtensions
     /// </returns>
     public static Result<TimeSpan> ParseTimeSpan(this string? str)
         => ITimeSpanParser.DefaultImpl.Parse(str);
-
-    /// <summary>
-    /// Parses a string representation of a TimeSpan using a provided format provider.
-    /// </summary>
-    /// <param name="str">The string representation of the TimeSpan to parse. Can be null.</param>
-    /// <param name="formatProvider">The format provider used to parse the string into a TimeSpan.</param>
-    /// <returns>A Result containing the parsed TimeSpan if successful, or an Error if the string format is invalid.</returns>
-    public static Result<TimeSpan> ParseTimeSpan(this string? str, IFormatProvider formatProvider)
-        => TimeSpan.TryParse(str, formatProvider, out TimeSpan value) ? value : (Error)"Invalid format";
 
     /// <summary>
     /// Parses the given string into a DateTime object.

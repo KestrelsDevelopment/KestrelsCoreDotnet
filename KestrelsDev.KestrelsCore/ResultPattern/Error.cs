@@ -59,7 +59,7 @@ public record Error(string Message, Exception? Exception = null, object? Payload
     /// Typically used to consolidate multiple errors into a unified representation.
     /// </returns>
     public static implicit operator Error(List<Error> errors)
-        => new AggregateError($"Multiple errors occurred, see {nameof(AggregateError.Errors)} for details.", errors);
+        => (AggregateError)errors;
 
     /// <summary>
     /// Returns a string that represents the current error.

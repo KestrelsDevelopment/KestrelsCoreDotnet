@@ -37,7 +37,11 @@ public static class KestrelsCoreApplication
                 optional: true, reloadOnChange: false)
             .AddEnvironmentVariables();
 
-        builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
+        bool hasConfiguredSinks = builder.Configuration.GetSection("Serilog").Get<SerilogConfig>()?.WriteTo.Count > 0;
+        if (hasConfiguredSinks)
+            builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
+        else
+            builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console());
 
         CoreSettings coreSettings =
             builder.Configuration.GetSection(nameof(CoreSettings)).Get<CoreSettings.CoreSettingsModel>() ?? new();
@@ -85,4 +89,9 @@ public static class KestrelsCoreApplication
             EnvironmentName = environmentName,
             WebRootPath = webRootPath
         });
+
+    private class SerilogConfig
+    {
+        public List<object> WriteTo { get; set; } = [];
+    }
 }
