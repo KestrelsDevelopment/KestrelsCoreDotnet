@@ -90,7 +90,7 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.Add<Service>();
+        registration.Add<Service>(InjectionType.Transient);
 
         Service first = scope.Get<Service>();
         Service second = scope.Get<Service>();
@@ -103,13 +103,13 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.Add<Service>();
+        registration.Add<Service>(InjectionType.Scoped);
 
         IServiceScope childScope = scope.CreateChildScope();
 
+        Service child = childScope.Get<Service>();
         Service first = scope.Get<Service>();
         Service second = scope.Get<Service>();
-        Service child = childScope.Get<Service>();
 
         await Assert.That(first).IsSameReferenceAs(second);
         await Assert.That(first).IsNotSameReferenceAs(child);
@@ -120,14 +120,14 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.Add<Service>();
+        registration.Add<Service>(InjectionType.Singleton);
 
         IServiceScope childScope = scope.CreateChildScope();
         ServiceScope otherScope = new(registration);
 
-        Service original = scope.Get<Service>();
-        Service child = childScope.Get<Service>();
         Service other = otherScope.Get<Service>();
+        Service child = childScope.Get<Service>();
+        Service original = scope.Get<Service>();
 
         await Assert.That(original).IsSameReferenceAs(child);
         await Assert.That(original).IsSameReferenceAs(child);
@@ -139,7 +139,7 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.Add<Service>();
+        registration.Add<Service>(InjectionType.Transient);
 
         Service? first = scope.TryGet<Service>();
         Service? second = scope.TryGet<Service>();
@@ -152,13 +152,13 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.Add<Service>();
+        registration.Add<Service>(InjectionType.Scoped);
 
         IServiceScope childScope = scope.CreateChildScope();
 
+        Service? child = childScope.TryGet<Service>();
         Service? first = scope.TryGet<Service>();
         Service? second = scope.TryGet<Service>();
-        Service? child = childScope.TryGet<Service>();
 
         await Assert.That(first).IsSameReferenceAs(second);
         await Assert.That(first).IsNotSameReferenceAs(child);
@@ -169,14 +169,14 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.Add<Service>();
+        registration.Add<Service>(InjectionType.Singleton);
 
         IServiceScope childScope = scope.CreateChildScope();
         ServiceScope otherScope = new(registration);
 
-        Service? original = scope.TryGet<Service>();
-        Service? child = childScope.TryGet<Service>();
         Service? other = otherScope.TryGet<Service>();
+        Service? child = childScope.TryGet<Service>();
+        Service? original = scope.TryGet<Service>();
 
         await Assert.That(original).IsSameReferenceAs(child);
         await Assert.That(original).IsSameReferenceAs(child);
@@ -254,7 +254,7 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.AddKeyed<Service>(Key);
+        registration.AddKeyed<Service>(Key, InjectionType.Transient);
 
         Service first = scope.GetKeyed<Service>(Key);
         Service second = scope.GetKeyed<Service>(Key);
@@ -267,13 +267,13 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.AddKeyed<Service>(Key);
+        registration.AddKeyed<Service>(Key, InjectionType.Scoped);
 
         IServiceScope childScope = scope.CreateChildScope();
 
+        Service child = childScope.GetKeyed<Service>(Key);
         Service first = scope.GetKeyed<Service>(Key);
         Service second = scope.GetKeyed<Service>(Key);
-        Service child = childScope.GetKeyed<Service>(Key);
 
         await Assert.That(first).IsSameReferenceAs(second);
         await Assert.That(first).IsNotSameReferenceAs(child);
@@ -284,14 +284,14 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.AddKeyed<Service>(Key);
+        registration.AddKeyed<Service>(Key, InjectionType.Singleton);
 
         IServiceScope childScope = scope.CreateChildScope();
         ServiceScope otherScope = new(registration);
 
-        Service original = scope.GetKeyed<Service>(Key);
-        Service child = childScope.GetKeyed<Service>(Key);
         Service other = otherScope.GetKeyed<Service>(Key);
+        Service child = childScope.GetKeyed<Service>(Key);
+        Service original = scope.GetKeyed<Service>(Key);
 
         await Assert.That(original).IsSameReferenceAs(child);
         await Assert.That(original).IsSameReferenceAs(child);
@@ -303,7 +303,7 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.AddKeyed<Service>(Key);
+        registration.AddKeyed<Service>(Key, InjectionType.Transient);
 
         Service? first = scope.TryGetKeyed<Service>(Key);
         Service? second = scope.TryGetKeyed<Service>(Key);
@@ -316,13 +316,13 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.AddKeyed<Service>(Key);
+        registration.AddKeyed<Service>(Key, InjectionType.Scoped);
 
         IServiceScope childScope = scope.CreateChildScope();
 
+        Service? child = childScope.TryGetKeyed<Service>(Key);
         Service? first = scope.TryGetKeyed<Service>(Key);
         Service? second = scope.TryGetKeyed<Service>(Key);
-        Service? child = childScope.TryGetKeyed<Service>(Key);
 
         await Assert.That(first).IsSameReferenceAs(second);
         await Assert.That(first).IsNotSameReferenceAs(child);
@@ -333,14 +333,14 @@ public class ServiceScope_Tests
     {
         ServiceRegistration registration = new();
         ServiceScope scope = new(registration);
-        registration.AddKeyed<Service>(Key);
+        registration.AddKeyed<Service>(Key, InjectionType.Singleton);
 
         IServiceScope childScope = scope.CreateChildScope();
         ServiceScope otherScope = new(registration);
 
-        Service? original = scope.TryGetKeyed<Service>(Key);
-        Service? child = childScope.TryGetKeyed<Service>(Key);
         Service? other = otherScope.TryGetKeyed<Service>(Key);
+        Service? child = childScope.TryGetKeyed<Service>(Key);
+        Service? original = scope.TryGetKeyed<Service>(Key);
 
         await Assert.That(original).IsSameReferenceAs(child);
         await Assert.That(original).IsSameReferenceAs(child);
@@ -357,8 +357,8 @@ public class ServiceScope_Tests
 
         IServiceScope childScope = scope.CreateChildScope();
 
-        Service? original = scope.Get<Service>();
         Service? child = childScope.Get<Service>();
+        Service? original = scope.Get<Service>();
 
         await Assert.That(original).IsSameReferenceAs(child);
     }

@@ -8,6 +8,8 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
 {
     private IServiceScope? _parentScope;
 
+    private Dictionary<Type, Dictionary<object, object>> _instances = [];
+
     private ServiceScope(IServiceRegistration registration, IServiceScope parentScope) : this(registration)
     {
         _parentScope = parentScope;
@@ -27,15 +29,34 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
 
     public object GetKeyed(Type serviceType, object key)
     {
+        // Get registration
         RegisteredService? service = registration.GetKeyedDefinition(serviceType, key);
 
         if (service is null)
             throw new NullInjectionException(serviceType, "No definition found");
 
+        // If Singleton and this is not root scope, try to get from parent
+        if (service?.InjectionType is InjectionType.Singleton && _parentScope is not null)
+            return _parentScope.GetKeyed(serviceType, key);
+
+        if (service?.InjectionType is not InjectionType.Transient)
+            if (_instances.TryGetValue(serviceType, out var keyMap) && keyMap.TryGetValue(key, out var result))
+                return result;
+
         object constructed = service?.Factory(this)!;
 
         if (!constructed.GetType().IsAssignableTo(serviceType))
             throw new NullInjectionException(serviceType, "Constructed object is of unexpected type");
+
+        if(service?.InjectionType is not InjectionType.Transient)
+        {
+            if (!_instances.TryGetValue(serviceType, out var keyMap))
+            {
+                keyMap = [];
+                _instances.Add(serviceType, keyMap);
+            }
+            keyMap.Add(key, constructed);
+        }
 
         return constructed;
     }
@@ -76,6 +97,6 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
         if (errors.Count == 0)
             return true;
 
-        return new AggregateError($"One or more service failed validation. See {nameof(AggregateError.Errors)} for details.", errors);
+        return new AggregateError($"One or more services failed validation. See {nameof(AggregateError.Errors)} for details.", errors);
     }
 }
