@@ -8,9 +8,15 @@ public class TaskExtensions_Tests
     public async Task Map__AppliesTransformFuncToResult()
     {
         Task<string> task = Task.FromResult("test");
+        string? calledWith = null;
 
-        int result = await task.Map(s => 1);
+        int result = await task.Map(s =>
+        {
+            calledWith = s;
+            return 1;
+        });
 
+        await Assert.That(calledWith).EqualTo("test");
         await Assert.That(result).EqualTo(1);
     }
 }

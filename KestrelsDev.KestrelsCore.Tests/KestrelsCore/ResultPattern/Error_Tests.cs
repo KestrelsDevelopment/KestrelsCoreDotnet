@@ -86,11 +86,13 @@ public class Error_Tests
     {
         List<Error> errors = [new("first"), new("second")];
 
-        AggregateError err = errors;
+        Error err = errors;
+        AggregateError? aggErr = err as AggregateError;
 
-        await Assert.That(err.Errors.Count).EqualTo(2);
-        await Assert.That(err.Errors).Contains(errors[0]);
-        await Assert.That(err.Errors).Contains(errors[1]);
+        await Assert.That(aggErr).IsNotNull();
+        await Assert.That(aggErr!.Errors.Count).EqualTo(2);
+        await Assert.That(aggErr!.Errors).Contains(errors[0]);
+        await Assert.That(aggErr!.Errors).Contains(errors[1]);
     }
 
     [Test]
