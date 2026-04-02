@@ -74,7 +74,7 @@ public class ServiceRegistration() : IServiceRegistration
                 throw new NullInjectionException(typeof(TService), $"No public constructor found for registered type {typeof(TImpl)}");
 
             object[] args = ctor.GetParameters()
-                .Select(p => scope.Get(p.GetType()))
+                .Select(p => scope.Get(p.ParameterType))
                 .ToArray();
 
             object constructed = ctor.Invoke(args);

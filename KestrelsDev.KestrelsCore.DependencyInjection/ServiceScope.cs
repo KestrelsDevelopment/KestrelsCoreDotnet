@@ -1,3 +1,4 @@
+using KestrelsDev.KestrelsCore.DependencyInjection.Exceptions;
 using KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 using KestrelsDev.KestrelsCore.ResultPattern;
 
@@ -13,52 +14,68 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
     }
 
     public IServiceScope CreateChildScope()
-    {
-        throw new NotImplementedException();
-    }
+        => new ServiceScope(registration, this);
 
     public TService Get<TService>()
-    {
-        throw new NotImplementedException();
-    }
+        => (TService)Get(typeof(TService));
 
     public object Get(Type serviceType)
-    {
-        throw new NotImplementedException();
-    }
+        => GetKeyed(serviceType, "");
 
     public TService GetKeyed<TService>(object key)
-    {
-        throw new NotImplementedException();
-    }
+        => (TService)GetKeyed(typeof(TService), key);
 
     public object GetKeyed(Type serviceType, object key)
     {
-        throw new NotImplementedException();
+        RegisteredService? service = registration.GetKeyedDefinition(serviceType, key);
+
+        if (service is null)
+            throw new NullInjectionException(serviceType, "No definition found");
+
+        object constructed = service?.Factory(this)!;
+
+        if (!constructed.GetType().IsAssignableTo(serviceType))
+            throw new NullInjectionException(serviceType, "Constructed object is of unexpected type");
+
+        return constructed;
     }
 
     public Result<TService> TryGet<TService>()
-    {
-        throw new NotImplementedException();
-    }
+        => TryGet(typeof(TService)).Map(
+            v => new Result<TService>((TService)v),
+            e => new Result<TService>(e));
 
     public Result<object> TryGet(Type serviceType)
-    {
-        throw new NotImplementedException();
-    }
+        => Result.From(() => Get(serviceType));
 
     public Result<TService> TryGetKeyed<TService>(object key)
-    {
-        throw new NotImplementedException();
-    }
+        => TryGetKeyed(typeof(TService), key).Map(
+            v => new Result<TService>((TService)v),
+            e => new Result<TService>(e));
 
     public Result<object> TryGetKeyed(Type serviceType, object key)
-    {
-        throw new NotImplementedException();
-    }
+        => Result.From(() => GetKeyed(serviceType, key));
 
     public Result Validate()
     {
-        throw new NotImplementedException();
+        List<Error> errors = [];
+
+        foreach (var serviceType in registration.Register.Values)
+            foreach (var service in serviceType.Values)
+            {
+                try
+                {
+                    service.Factory(this);
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(ex);
+                }
+            }
+
+        if (errors.Count == 0)
+            return true;
+
+        return new AggregateError($"One or more service failed validation. See {nameof(AggregateError.Errors)} for details.", errors);
     }
 }
