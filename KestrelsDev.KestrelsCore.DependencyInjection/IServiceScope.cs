@@ -1,6 +1,6 @@
 using KestrelsDev.KestrelsCore.ResultPattern;
 using KestrelsDev.KestrelsCore.DependencyInjection.Registration;
-using KestrelsDev.KestrelsCore.DependencyInjection.Exceptions;
+using KestrelsDev.KestrelsCore.DependencyInjection.Errors;
 
 namespace KestrelsDev.KestrelsCore.DependencyInjection;
 

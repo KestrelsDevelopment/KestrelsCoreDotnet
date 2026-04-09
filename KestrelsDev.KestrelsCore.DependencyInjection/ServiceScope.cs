@@ -1,4 +1,4 @@
-using KestrelsDev.KestrelsCore.DependencyInjection.Exceptions;
+using KestrelsDev.KestrelsCore.DependencyInjection.Errors;
 using KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 using KestrelsDev.KestrelsCore.ResultPattern;
 
@@ -36,7 +36,7 @@ public class ServiceScope(IServiceRegistration registration) : IServiceScope
         RegisteredService? service = registration.GetKeyedDefinition(serviceType, key);
 
         if (service is null)
-            throw new NullInjectionException(serviceType, "No definition found");
+            throw new NullInjectionException(serviceType, "Service not registered");
 
         // If Singleton and this is not root scope, try to get from parent
         if (service?.InjectionType is InjectionType.Singleton && _parentScope is not null)

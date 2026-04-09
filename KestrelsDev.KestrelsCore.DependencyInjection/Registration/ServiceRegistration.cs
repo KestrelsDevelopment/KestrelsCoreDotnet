@@ -1,4 +1,4 @@
-﻿using KestrelsDev.KestrelsCore.DependencyInjection.Exceptions;
+﻿using KestrelsDev.KestrelsCore.DependencyInjection.Errors;
 using System.Reflection;
 
 namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
@@ -71,13 +71,16 @@ public class ServiceRegistration() : IServiceRegistration
             ConstructorInfo? ctor = typeof(TImpl).GetConstructors().FirstOrDefault();
 
             if (ctor is null)
-                throw new NullInjectionException(typeof(TService), $"No public constructor found for registered type {typeof(TImpl)}");
+                throw new ServiceConstructionException(typeof(TService), $"No public constructor found for registered type {typeof(TImpl)}");
 
             object[] args = ctor.GetParameters()
                 .Select(p => scope.Get(p.ParameterType))
                 .ToArray();
 
             object constructed = ctor.Invoke(args);
+
+            if(!constructed.GetType().IsAssignableTo(typeof(TService)))
+                throw new ServiceConstructionException(typeof(TService), "Constructed object is of unexpected type");
 
             return constructed;
         }
