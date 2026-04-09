@@ -5,6 +5,8 @@
 /// </summary>
 public class ServiceRegister() : Dictionary<Type, ServiceRegister.ServiceKeyRegister>
 {
+    public const string EmptyKey = "";
+
     public ServiceRegister(ServiceRegister other) : this()
     {
         foreach (KeyValuePair<Type, ServiceKeyRegister> kvp in other)
@@ -19,7 +21,7 @@ public class ServiceRegister() : Dictionary<Type, ServiceRegister.ServiceKeyRegi
     /// <param name="type">The type of the retrieved service.</param>
     /// <returns>The definition of the service if it has been registered, or null otherwise.</returns>
     public RegisteredService? Get(Type type)
-        => Get(type, string.Empty);
+        => Get(type, EmptyKey);
 
     /// <summary>
     /// Retrieve the service definition of the keyed service with a given type and key.

@@ -6,7 +6,7 @@ namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 public class ServiceRegistration() : IServiceRegistration
 {
     public ServiceRegister Register => new(_register);
-    private ServiceRegister _register = [];
+    private readonly ServiceRegister _register = [];
 
     public ServiceRegistration(ServiceRegistration other) : this()
     {
@@ -38,7 +38,7 @@ public class ServiceRegistration() : IServiceRegistration
     public void Add<TService, TImpl>(InjectionType injectionType = InjectionType.Transient)
         where TImpl : TService
         where TService : class
-        => AddKeyed<TService, TImpl>("", injectionType);
+        => AddKeyed<TService, TImpl>(ServiceRegister.EmptyKey, injectionType);
 
     public void AddKeyed<TService>(TService instance, object key)
         where TService : class
@@ -95,7 +95,7 @@ public class ServiceRegistration() : IServiceRegistration
         => Register.Get(type, key);
 
     private void AddInternal(Type serviceType, Func<IServiceScope, object> factory, InjectionType injectionType)
-        => AddKeyedInternal(serviceType, factory, injectionType, string.Empty);
+        => AddKeyedInternal(serviceType, factory, injectionType, ServiceRegister.EmptyKey);
 
     private void AddKeyedInternal(Type serviceType, Func<IServiceScope, object> factory, InjectionType injectionType, object key)
     {
