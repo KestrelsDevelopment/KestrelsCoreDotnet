@@ -1,4 +1,5 @@
 ﻿using KestrelsDev.KestrelsCore.DependencyInjection.Errors;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
@@ -31,11 +32,13 @@ public class ServiceRegistration() : IServiceRegistration
         where TService : class
         => AddInternal(typeof(TService), s => factory(s), injectionType);
 
-    public void Add<TService>(InjectionType injectionType = InjectionType.Transient)
+    public void Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TService>
+        (InjectionType injectionType = InjectionType.Transient)
         where TService : class
         => Add<TService, TService>(injectionType);
 
-    public void Add<TService, TImpl>(InjectionType injectionType = InjectionType.Transient)
+    public void Add<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImpl>
+        (InjectionType injectionType = InjectionType.Transient)
         where TImpl : TService
         where TService : class
         => AddKeyed<TService, TImpl>(ServiceRegister.EmptyKey, injectionType);
@@ -58,11 +61,13 @@ public class ServiceRegistration() : IServiceRegistration
         where TService : class
         => AddKeyedInternal(typeof(TService), s => factory(s), injectionType, key);
 
-    public void AddKeyed<TService>(object key, InjectionType injectionType = InjectionType.Transient)
+    public void AddKeyed<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TService>
+        (object key, InjectionType injectionType = InjectionType.Transient)
         where TService : class
         => AddKeyed<TService, TService>(key, injectionType);
 
-    public void AddKeyed<TService, TImpl>(object key, InjectionType injectionType = InjectionType.Transient)
+    public void AddKeyed<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImpl>
+        (object key, InjectionType injectionType = InjectionType.Transient)
         where TImpl : TService
         where TService : class
     {

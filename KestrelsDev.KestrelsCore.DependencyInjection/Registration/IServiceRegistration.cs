@@ -1,4 +1,6 @@
-﻿namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 
 /// <summary>
 /// Represents a container that holds definitions for injectable services.
@@ -24,8 +26,8 @@ public interface IServiceRegistration
     /// <typeparam name="TService">The type of the injectable service.</typeparam>
     /// <typeparam name="TImpl">The type of the injected instance.</typeparam>
     /// <param name="instance">The instance to return when the service is injected.</param>
-    public void Add<TService, TImpl>(TImpl instance) 
-        where TImpl : TService 
+    public void Add<TService, TImpl>(TImpl instance)
+        where TImpl : TService
         where TService : class;
 
     /// <summary>
@@ -54,7 +56,8 @@ public interface IServiceRegistration
     /// </summary>
     /// <typeparam name="TService">The type of the injectable service.</typeparam>
     /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
-    public void Add<TService>(InjectionType injectionType = InjectionType.Transient)
+    public void Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TService>
+        (InjectionType injectionType = InjectionType.Transient)
         where TService : class;
 
     /// <summary>
@@ -64,7 +67,8 @@ public interface IServiceRegistration
     /// <typeparam name="TService">The type of the injectable service.</typeparam>
     /// <typeparam name="TImpl">The type of the injected.</typeparam>
     /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
-    public void Add<TService, TImpl>(InjectionType injectionType = InjectionType.Transient)
+    public void Add<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImpl>
+        (InjectionType injectionType = InjectionType.Transient)
         where TImpl : TService
         where TService : class;
 
@@ -121,7 +125,8 @@ public interface IServiceRegistration
     /// <typeparam name="TService">The type of the injectable service.</typeparam>
     /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
     /// <param name="key">The key used to retrieve the registered service.</param>
-    public void AddKeyed<TService>(object key, InjectionType injectionType = InjectionType.Transient)
+    public void AddKeyed<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TService>
+        (object key, InjectionType injectionType = InjectionType.Transient)
         where TService : class;
 
     /// <summary>
@@ -132,7 +137,8 @@ public interface IServiceRegistration
     /// <typeparam name="TImpl">The type of the injected.</typeparam>
     /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
     /// <param name="key">The key used to retrieve the registered service.</param>
-    public void AddKeyed<TService, TImpl>(object key, InjectionType injectionType = InjectionType.Transient)
+    public void AddKeyed<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImpl>
+        (object key, InjectionType injectionType = InjectionType.Transient)
         where TImpl : TService
         where TService : class;
 

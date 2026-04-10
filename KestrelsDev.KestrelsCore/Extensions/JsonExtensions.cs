@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using KestrelsDev.KestrelsCore.ResultPattern;
 
@@ -15,6 +16,8 @@ public static class JsonExtensions
     /// <param name="obj">The object to serialize. Can be null.</param>
     /// <param name="options">Optional JSON serializer options for customizing serialization behavior.</param>
     /// <returns>A JSON string representation of the object.</returns>
+    [RequiresDynamicCode("Serialization Requires Dynamic Code")]
+    [RequiresUnreferencedCode("Serialization Requires Unreferenced Code")]
     public static string ToJson<T>(this T? obj, JsonSerializerOptions? options = null)
     {
         return JsonSerializer.Serialize(obj, options);
@@ -30,6 +33,8 @@ public static class JsonExtensions
     /// A <see cref="Result{T}"/> containing the cloned object if successful,
     /// or an error if the deserialization process fails.
     /// </returns>
+    [RequiresDynamicCode("Serialization Requires Dynamic Code")]
+    [RequiresUnreferencedCode("Serialization Requires Unreferenced Code")]
     public static Result<T> CloneJson<T>(this T obj, JsonSerializerOptions? options = null)
     {
         string serialized = obj.ToJson(options);
