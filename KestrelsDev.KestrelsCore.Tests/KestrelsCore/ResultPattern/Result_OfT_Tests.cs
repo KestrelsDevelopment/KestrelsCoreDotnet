@@ -7,6 +7,8 @@ public class Result_OfT_Tests
     private Result<string> WithValue => new("someValue");
     private Result<string> WithError => new(new Error("someError"));
 
+    private record MyError() : Error("testing error") { }
+
     [Test]
     public async Task Constructor__CalledWithValue__ReturnsInstanceWithValue()
     {
@@ -87,20 +89,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Catch__InstanceHasError_AnyException_CalledWithActionOfException__ExecutesActionWithException_ReturnsInstance()
-    {
-        Exception ex = new();
-        Result<string> result = new(new Error("someError", ex));
-        Exception? calledWith = null;
-
-        Result<string> catchResult = result.Catch(exArg => calledWith = exArg);
-
-        await Assert.That(calledWith).EqualTo(ex);
-        await Assert.That<Result<string>>(catchResult).EqualTo(result);
-    }
-
-    [Test]
-    public async Task Catch__InstanceHasError_AnyException_CalledWithActionOfError__ExecutesActionWithError_ReturnsInstance()
+    public async Task Catch_AnyError__InstanceHasError__ExecutesActionWithError_ReturnsInstance()
     {
         Error err = new("someError", new Exception());
         Result<string> result = new(err);
@@ -113,20 +102,20 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Catch__InstanceHasErrorWithMatchingException_SpecificException_CalledWithActionOfException__ExecutesActionWithException_ReturnsInstance()
+    public async Task Catch_SpecificError__InstanceHasMatchingError__ExecutesActionWithException_ReturnsInstance()
     {
-        ArgumentException ex = new();
-        Result<string> result = new(new Error("someError", ex));
-        Exception? calledWith = null;
+        MyError err = new();
+        Result<string> result = err;
+        Error? calledWith = null;
 
-        Result<string> catchResult = result.Catch<ArgumentException>(exArg => calledWith = exArg);
+        Result<string> catchResult = result.Catch<MyError>(errArg => calledWith = errArg);
 
-        await Assert.That(calledWith).EqualTo(ex);
+        await Assert.That<Error>(calledWith).EqualTo(err);
         await Assert.That<Result<string>>(catchResult).EqualTo(result);
     }
 
     [Test]
-    public async Task Catch__InstanceHasErrorWithMatchingException_SpecificException_CalledWithActionOfError__ExecutesActionWithError_ReturnsInstance()
+    public async Task Catch_SpecificException__InstanceHasErrorWithMatchingException__ExecutesActionWithError_ReturnsInstance()
     {
         Error err = new("someError", new ArgumentException());
         Result<string> result = new(err);
@@ -139,20 +128,19 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Catch__InstanceHasErrorWithDifferentException_SpecificException_CalledWithActionOfException__DoesNotExecuteAction_ReturnsInstance()
+    public async Task Catch_SpecificError__InstanceHasDifferentError__DoesNotExecuteAction_ReturnsInstance()
     {
-        ArgumentException ex = new();
-        Result<string> result = new(new Error("someError", ex));
-        Exception? calledWith = null;
+        Result<string> result = WithError;
+        Error? calledWith = null;
 
-        Result<string> catchResult = result.Catch<NullReferenceException>(exArg => calledWith = exArg);
+        Result<string> catchResult = result.Catch<NullReferenceException>(errArg => calledWith = errArg);
 
-        await Assert.That(calledWith).IsNull();
+        await Assert.That<Error>(calledWith).IsNull();
         await Assert.That<Result<string>>(catchResult).EqualTo(result);
     }
 
     [Test]
-    public async Task Catch__InstanceHasErrorWithDifferentException_SpecificException_CalledWithActionOfError__DoesNotExecuteAction_ReturnsInstance()
+    public async Task Catch_SpecificException__InstanceHasErrorWithDifferentException__DoesNotExecuteAction_ReturnsInstance()
     {
         Error err = new("someError", new ArgumentException());
         Result<string> result = new(err);
@@ -165,20 +153,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Catch__InstanceHasErrorWithoutException_AnyException_CalledWithActionOfException__ExecutesActionWithExceptionFromError_ReturnsInstance()
-    {
-        Result<string> result = WithError;
-        Exception? calledWith = null;
-
-        Result<string> catchResult = result.Catch(exArg => calledWith = exArg);
-
-        await Assert.That(calledWith).IsNotNull();
-        await Assert.That(calledWith.Message).EqualTo(result.Error!.Message);
-        await Assert.That<Result<string>>(catchResult).EqualTo(result);
-    }
-
-    [Test]
-    public async Task Catch__InstanceHasErrorWithoutException_AnyException_CalledWithActionOfError__ExecutesActionWithError_ReturnsInstance()
+    public async Task Catch_AnyError__InstanceHasErrorWithoutException__ExecutesActionWithError_ReturnsInstance()
     {
         Result<string> result = WithError;
         Error? calledWith = null;
@@ -190,19 +165,20 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Catch__InstanceHasErrorWithoutException_SpecificException_CalledWithActionOfException__DoesNotExecuteAction_ReturnsInstance()
+    public async Task Catch_SpecificError__InstanceHasMatchingErrorWithoutException__ExecutesActionWithError_ReturnsInstance()
     {
-        Result<string> result = WithError;
-        Exception? calledWith = null;
+        MyError err = new();
+        Result<string> result = err;
+        Error? calledWith = null;
 
-        Result<string> catchResult = result.Catch<ArgumentException>(exArg => calledWith = exArg);
+        Result<string> catchResult = result.Catch<MyError>(errArg => calledWith = errArg);
 
-        await Assert.That(calledWith).IsNull();
+        await Assert.That<Error>(calledWith).EqualTo(err);
         await Assert.That<Result<string>>(catchResult).EqualTo(result);
     }
 
     [Test]
-    public async Task Catch__InstanceHasErrorWithoutException_SpecificException_CalledWithActionOfError__DoesNotExecuteAction_ReturnsInstance()
+    public async Task Catch_SpecificException__InstanceHasErrorWithoutException__DoesNotExecuteAction_ReturnsInstance()
     {
         Result<string> result = WithError;
         Error? calledWith = null;
@@ -214,19 +190,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Catch__InstanceHasValue_AnyException_CalledWithActionOfException__DoesNotExecuteAction_ReturnsInstance()
-    {
-        Result<string> result = WithValue;
-        Exception? calledWith = null;
-
-        Result<string> catchResult = result.Catch(exArg => calledWith = exArg);
-
-        await Assert.That(calledWith).IsNull();
-        await Assert.That<Result<string>>(catchResult).EqualTo(result);
-    }
-
-    [Test]
-    public async Task Catch__InstanceHasValue_AnyException_CalledWithActionOfError__DoesNotExecuteAction_ReturnsInstance()
+    public async Task Catch_AnyError__InstanceHasValue__DoesNotExecuteAction_ReturnsInstance()
     {
         Result<string> result = WithValue;
         Error? calledWith = null;
@@ -238,19 +202,19 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Catch__InstanceHasValue_SpecificException_CalledWithActionOfException__DoesNotExecuteAction_ReturnsInstance()
+    public async Task Catch_SpecificError__InstanceHasValue__DoesNotExecuteAction_ReturnsInstance()
     {
         Result<string> result = WithValue;
-        Exception? calledWith = null;
+        Error? calledWith = null;
 
-        Result<string> catchResult = result.Catch<ArgumentException>(exArg => calledWith = exArg);
+        Result<string> catchResult = result.Catch<MyError>(errArg => calledWith = errArg);
 
-        await Assert.That(calledWith).IsNull();
+        await Assert.That<Error>(calledWith).IsNull();
         await Assert.That<Result<string>>(catchResult).EqualTo(result);
     }
 
     [Test]
-    public async Task Catch__InstanceHasValue_SpecificException_CalledWithActionOfError__DoesNotExecuteAction_ReturnsInstance()
+    public async Task Catch_SpecificException__InstanceHasValue__DoesNotExecuteAction_ReturnsInstance()
     {
         Result<string> result = WithValue;
         Error? calledWith = null;
@@ -262,7 +226,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Throw__InstanceHasError_AnyException__ThrowsException()
+    public async Task Throw_AnyException__InstanceHasError__ThrowsException()
     {
         Result<string> result = new(new Error("someError", new Exception()));
 
@@ -271,7 +235,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Throw__InstanceHasErrorWithMatchingException_SpecificException__ThrowsException()
+    public async Task Throw_SpecificException__InstanceHasErrorWithMatchingException__ThrowsException()
     {
         Result<string> result = new(new Error("someError", new ArgumentException()));
 
@@ -280,7 +244,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Throw__InstanceHasErrorWithDifferentException_SpecificException__DoesNotThrow_ReturnsInstance()
+    public async Task Throw_SpecificException__InstanceHasErrorWithDifferentException__DoesNotThrow_ReturnsInstance()
     {
         Result<string> result = new(new Error("someError", new ArgumentException()));
 
@@ -290,7 +254,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Throw__InstanceHasValue_AnyException__DoesNotThrow_ReturnsInstance()
+    public async Task Throw_AnyException__InstanceHasValue__DoesNotThrow_ReturnsInstance()
     {
         Result<string> result = WithValue;
 
@@ -300,7 +264,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Throw__InstanceHasValue_SpecificException__DoesNotThrow_ReturnsInstance()
+    public async Task Throw_SpecificException__InstanceHasValue__DoesNotThrow_ReturnsInstance()
     {
         Result<string> result = WithValue;
 
@@ -310,7 +274,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Throw__InstanceHasErrorWithoutException_AnyException__ThrowsExceptionFromError()
+    public async Task Throw_AnyException__InstanceHasErrorWithoutException__ThrowsExceptionFromError()
     {
         Result<string> result = WithError;
 
@@ -319,7 +283,7 @@ public class Result_OfT_Tests
     }
 
     [Test]
-    public async Task Throw__InstanceHasErrorWithoutException_SpecificException__DoesNotThrow_ReturnsInstance()
+    public async Task Throw_SpecificException__InstanceHasErrorWithoutException__DoesNotThrow_ReturnsInstance()
     {
         Result<string> result = WithError;
 

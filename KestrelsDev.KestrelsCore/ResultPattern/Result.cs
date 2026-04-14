@@ -83,29 +83,12 @@ public class Result<T> : Result
     public override Result<T> Then(Action action)
         => base.Then(action) as Result<T> ?? this;
 
-    /// <summary>
-    /// Executes the specified action if the current <see cref="Result{T}"/> or its base representation
-    /// contains an error with an associated exception. If no exception is explicitly provided, a new exception
-    /// is created and passed to the action based on the error message.
-    /// </summary>
-    /// <param name="action">The action to execute, which takes the exception as a parameter.</param>
-    /// <returns>
-    /// A <see cref="Result{T}"/> instance, enabling further chaining of operations.
-    /// If the instance is not in an error state, the action is not invoked, and the original instance is returned.
-    /// </returns>
-    public override Result<T> Catch(Action<Exception> action)
-        => base.Catch(action) as Result<T> ?? this;
-
     // ReSharper disable once RedundantTypeArgumentsOfMethod
-    /// <summary>
-    /// Executes the specified action if an error is present in the current result.
-    /// </summary>
-    /// <param name="action">The action to execute, which receives the exception causing the error as its parameter.</param>
-    /// <returns>The current <see cref="Result"/> instance for further chaining of operations.</returns>
-    public override Result<T> Catch<TException>(Action<TException> action)
-        => base.Catch<TException>(action) as Result<T> ?? this;
+    public override Result<T> Catch<TError>(Action<TError> action)
+        => base.Catch<TError>(action) as Result<T> ?? this;
 
-    public override Result<T> Catch(Action<Error> action) => base.Catch(action) as Result<T> ?? this;
+    public override Result<T> Catch(Action<Error> action) 
+        => base.Catch(action) as Result<T> ?? this;
 
     // ReSharper disable once RedundantTypeArgumentsOfMethod
     public override Result<T> Catch<TException>(Action<Error> action)
@@ -220,22 +203,6 @@ public class Result(Error? error)
     }
 
     /// <summary>
-    /// Executes the specified action if the current <see cref="Result{T}"/> represents an error,
-    /// and the error contains an exception. Allows for custom exception handling logic.
-    /// </summary>
-    /// <param name="action">The action to execute, which receives the exception causing the error (if present) or a new exception using the error message as input.</param>
-    /// <returns>
-    /// The current <see cref="Result{T}"/> instance. If the result is not an error, the <paramref name="action"/> is not executed, and the object is returned unchanged.
-    /// </returns>
-    public virtual Result Catch(Action<Exception> action)
-    {
-        if (IsError)
-            action.Invoke(Error.Exception ?? new Exception(Error.Message));
-
-        return this;
-    }
-
-    /// <summary>
     /// Executes the specified action if the result represents an error.
     /// </summary>
     /// <param name="action">The action to execute, which receives the encapsulated error details as its argument.</param>
@@ -255,10 +222,10 @@ public class Result(Error? error)
     /// <param name="action">An action to execute when the error contains an exception of type <typeparamref name="TException"/>.
     /// The exception is passed as a parameter to the provided action.</param>
     /// <returns>The current result instance, allowing for method chaining.</returns>
-    public virtual Result Catch<TException>(Action<TException> action) where TException : Exception
+    public virtual Result Catch<TError>(Action<TError> action) where TError : Error
     {
-        if (Error?.Exception is TException tEx)
-            action.Invoke(tEx);
+        if (Error is TError tErr)
+            action.Invoke(tErr);
 
         return this;
     }
