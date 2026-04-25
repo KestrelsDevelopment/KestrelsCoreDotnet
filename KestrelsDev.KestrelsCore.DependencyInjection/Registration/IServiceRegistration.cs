@@ -1,66 +1,147 @@
-using System.Collections.ObjectModel;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace KestrelsDev.KestrelsCore.DependencyInjection.Registration;
 
 /// <summary>
-/// Represents a mechanism for registering service types with their concrete implementations,
-/// allowing resolution of dependencies within a dependency injection container.
-/// This interface supports various methods of service registration including type mapping,
-/// singleton instances, and factory delegates.
+/// Represents a container that holds definitions for injectable services.
 /// </summary>
 public interface IServiceRegistration
 {
     /// <summary>
-    /// Provides a read-only view of the service registrations, mapping service types
-    /// to their respective implementations, factories, or singleton instances.
+    /// A copy of the internal register used by this <see cref="IServiceRegistration"/>
     /// </summary>
-    /// <remarks>
-    /// The <c>Registrations</c> property allows inspection of the service registration mappings
-    /// within the dependency injection container. This ensures that access to the internal
-    /// registration data remains consistent and immutable. It is crucial for managing and resolving
-    /// services, enabling proper dependency injection functionality.
-    /// </remarks>
-    public ReadOnlyDictionary<Type, object> Registrations { get; }
+    public ServiceRegister Register { get; }
 
-    /// Adds a service registration where the service type is associated with a concrete implementation type
-    /// using a parameterless constructor. The concrete type is resolved whenever the associated service type is requested.
-    /// <typeparam name="TService">The service interface or type to be registered.</typeparam>
-    /// <typeparam name="TImpl">The concrete implementation type of the service.</typeparam>
-    /// <returns>An instance of IServiceRegistration to allow for chaining additional service registrations or configurations.</returns>
-    public IServiceRegistration Add<TService, TImpl>() where TImpl : TService, new();
+    /// <summary>
+    /// Adds a singleton instance of type <typeparamref name="TService"/> to the container.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <param name="instance">The instance to return when the service is injected.</param>
+    public void Add<TService>(TService instance)
+        where TService : class;
 
-    /// Adds a service to the registration using a default constructor.
-    /// The concrete implementation is registered to be resolved whenever the service type is requested.
-    /// <typeparam name="TService">The type of the service to register.</typeparam>
-    /// <returns>An instance of IServiceRegistration for method chaining or further registrations.</returns>
-    public IServiceRegistration Add<TService>() where TService : new();
+    /// <summary>
+    /// Adds a singleton instance of type <typeparamref name="TService"/> to the container.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <typeparam name="TImpl">The type of the injected instance.</typeparam>
+    /// <param name="instance">The instance to return when the service is injected.</param>
+    public void Add<TService, TImpl>(TImpl instance)
+        where TImpl : TService
+        where TService : class;
 
-    /// Adds a service registration, associating the specified interface with a provided singleton implementation instance.
-    /// The singleton instance is registered for all future resolutions of the service interface type.
-    /// <typeparam name="TService">The type of the service interface to be registered.</typeparam>
-    /// <typeparam name="TImpl">The type of the implementation class that implements the service interface.</typeparam>
-    /// <param name="singleton">The instance of the implementation type to be registered as a singleton for the service interface.</param>
-    /// <returns>The current instance of IServiceRegistration for method chaining or further registrations.</returns>
-    public IServiceRegistration Add<TService, TImpl>(TImpl singleton) where TImpl : TService;
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using the passed factory function.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <param name="factory">The factory function that is invoked when the service is injected.</param>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    public void Add<TService>(Func<IServiceScope, TService> factory, InjectionType injectionType = InjectionType.Transient)
+        where TService : class;
 
-    /// Registers a service of the specified type as a singleton instance.
-    /// The provided instance will be used whenever the service type is requested.
-    /// <typeparam name="TService">The type of the service being registered.</typeparam>
-    /// <param name="singleton">The instance of the service to register as a singleton.</param>
-    /// <returns>An instance of IServiceRegistration for method chaining or further registrations.</returns>
-    public IServiceRegistration Add<TService>(TService singleton);
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using the passed factory function.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <typeparam name="TImpl">The type of the injected instance.</typeparam>
+    /// <param name="factory">The factory function that is invoked when the service is injected.</param>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    public void Add<TService, TImpl>(Func<IServiceScope, TImpl> factory, InjectionType injectionType = InjectionType.Transient)
+        where TImpl : TService
+        where TService : class;
 
-    /// Adds a service and its implementation to the service registration.
-    /// The implementation instance is created by invoking a user-provided factory method.
-    /// <typeparam name="TService">The type of the service to be registered.</typeparam>
-    /// <typeparam name="TImpl">The concrete implementation type of the specified service.</typeparam>
-    /// <param name="factory">A factory function responsible for creating an instance of the implementation.</param>
-    /// <returns>An instance of IServiceRegistration to allow for chaining further service registrations.</returns>
-    public IServiceRegistration Add<TService, TImpl>(Func<TImpl> factory) where TImpl : TService;
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using 
+    /// its first public constructor.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    public void Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TService>
+        (InjectionType injectionType = InjectionType.Transient)
+        where TService : class;
 
-    /// Adds a service registration where an instance of the service is created using a provided factory method.
-    /// <typeparam name="TService">The type of the service to be registered.</typeparam>
-    /// <param name="factory">A factory method that provides an instance of the service.</param>
-    /// <returns>An updated instance of IServiceRegistration to allow for chaining additional registrations or further configuration.</returns>
-    public IServiceRegistration Add<TService>(Func<TService> factory);
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using 
+    /// the first public constructor of <typeparamref name="TImpl"/>.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <typeparam name="TImpl">The type of the injected.</typeparam>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    public void Add<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImpl>
+        (InjectionType injectionType = InjectionType.Transient)
+        where TImpl : TService
+        where TService : class;
+
+    /// <summary>
+    /// Adds a singleton instance of type <typeparamref name="TService"/> to the container, 
+    /// which can be retrieved using a specified key.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <param name="instance">The instance to return when the service is injected.</param>
+    /// <param name="key">The key used to retrieve the registered service.</param>
+    public void AddKeyed<TService>(TService instance, object key)
+        where TService : class;
+
+    /// <summary>
+    /// Adds a singleton instance of type <typeparamref name="TService"/> to the container, 
+    /// which can be retrieved using a specified key.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <typeparam name="TImpl">The type of the injected instance.</typeparam>
+    /// <param name="instance">The instance to return when the service is injected.</param>
+    /// <param name="key">The key used to retrieve the registered service.</param>
+    public void AddKeyed<TService, TImpl>(TImpl instance, object key)
+        where TImpl : TService
+        where TService : class;
+
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using 
+    /// the passed factory function and which can be retrieved using a specified key.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <param name="factory">The factory function that is invoked when the service is injected.</param>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    /// <param name="key">The key used to retrieve the registered service.</param>
+    public void AddKeyed<TService>(Func<IServiceScope, TService> factory, object key, InjectionType injectionType = InjectionType.Transient)
+        where TService : class;
+
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using 
+    /// the passed factory function and which can be retrieved using a specified key.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <typeparam name="TImpl">The type of the injected instance.</typeparam>
+    /// <param name="factory">The factory function that is invoked when the service is injected.</param>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    /// <param name="key">The key used to retrieve the registered service.</param>
+    public void AddKeyed<TService, TImpl>(Func<IServiceScope, TImpl> factory, object key, InjectionType injectionType = InjectionType.Transient)
+        where TImpl : TService
+        where TService : class;
+
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using 
+    /// its first public constructor and which can be retrieved using a specified key.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    /// <param name="key">The key used to retrieve the registered service.</param>
+    public void AddKeyed<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TService>
+        (object key, InjectionType injectionType = InjectionType.Transient)
+        where TService : class;
+
+    /// <summary>
+    /// Adds a service of type <typeparamref name="TService"/> to the container that is constructed using
+    /// the first public constructor of <typeparamref name="TImpl"/> and which can be retrieved using a specified key.
+    /// </summary>
+    /// <typeparam name="TService">The type of the injectable service.</typeparam>
+    /// <typeparam name="TImpl">The type of the injected.</typeparam>
+    /// <param name="injectionType">The <see cref="InjectionType"/> that this service is registered with.</param>
+    /// <param name="key">The key used to retrieve the registered service.</param>
+    public void AddKeyed<TService, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImpl>
+        (object key, InjectionType injectionType = InjectionType.Transient)
+        where TImpl : TService
+        where TService : class;
+
+    public RegisteredService? GetDefinition(Type type);
+    public RegisteredService? GetKeyedDefinition(Type type, object key);
 }

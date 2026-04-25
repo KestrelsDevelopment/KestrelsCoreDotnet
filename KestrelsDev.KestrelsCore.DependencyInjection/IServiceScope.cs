@@ -1,44 +1,93 @@
-using KestrelsDev.KestrelsCore.DependencyInjection.Exceptions;
 using KestrelsDev.KestrelsCore.ResultPattern;
+using KestrelsDev.KestrelsCore.DependencyInjection.Registration;
+using KestrelsDev.KestrelsCore.DependencyInjection.Errors;
 
 namespace KestrelsDev.KestrelsCore.DependencyInjection;
 
 /// <summary>
-/// Represents a scope for managing service lifetimes, including transient and singleton instances,
-/// and provides methods to create, resolve, and validate service configurations within the scope.
+/// Represents a container that automates the creation of instances based on service registrations and holds reusable instances.
 /// </summary>
 public interface IServiceScope
 {
     /// <summary>
-    /// Creates and returns a new instance of the specified service type.
+    /// Creates or reuses an instance of type <typeparamref name="TService"/>.
     /// </summary>
-    /// <typeparam name="TService">The type of service to be instantiated.</typeparam>
-    /// <returns>A new instance of the requested service type.</returns>
-    /// <exception cref="NullInjectionException">
-    /// Thrown if the requested service is not registered, the implementation lacks a valid public constructor,
-    /// or the created instance is not of the requested type.
-    /// </exception>
-    public TService New<TService>();
+    /// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+    /// <returns>The retrieved service.</returns>
+    /// <remarks>Throws an exception if the requested service is not registered or unable to be constructed.</remarks>
+    /// <exception cref="NullInjectionException"></exception>
+    public TService Get<TService>();
 
     /// <summary>
-    /// Resolves and returns a singleton instance of the specified service type within the current scope.
-    /// If an instance of the specified type already exists in the current scope, the existing instance is returned.
-    /// Otherwise, a new instance is created, stored, and returned.
+    /// Creates or reuses an instance of type <typeparamref name="TService"/>.
     /// </summary>
-    /// <typeparam name="TService">The type of the service to resolve as a singleton.</typeparam>
-    /// <returns>An instance of the specified service type, shared within the current scope.</returns>
-    /// <exception cref="NullInjectionException">
-    /// Thrown when the creation of the service instance fails.
-    /// </exception>
-    public TService Singleton<TService>();
+    /// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+    /// <returns>A <see cref="Result{T}"/> object wrapping either the requested service, or an error if retrieval failed.</returns>
+    public Result<TService> TryGet<TService>();
 
     /// <summary>
-    /// Validates the registered service dependencies within the scope.
+    /// Creates or reuses a keyed instance of type <typeparamref name="TService"/>.
     /// </summary>
-    /// <returns>
-    /// A <see cref="Result"/> instance representing the outcome of the validation.
-    /// Returns a successful result if all dependencies are correctly registered and valid;
-    /// otherwise, returns a result containing one or more validation errors.
-    /// </returns>
+    /// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+    /// <param name="key">The key that the service was registered under.</param>
+    /// <returns>The retrieved service.</returns>
+    /// <remarks>Throws an exception if the requested service is not registered or unable to be constructed.</remarks>
+    /// <exception cref="NullInjectionException"></exception>
+    public TService GetKeyed<TService>(object key);
+
+    /// <summary>
+    /// Creates or reuses a keyed instance of type <typeparamref name="TService"/>.
+    /// </summary>
+    /// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+    /// <param name="key">The key that the service was registered under.</param>
+    /// <returns>A <see cref="Result{T}"/> object wrapping either the requested service, or an error if retrieval failed.</returns>
+    public Result<TService> TryGetKeyed<TService>(object key);
+
+    /// <summary>
+    /// Creates or reuses an instance of type <paramref name="serviceType"/>.
+    /// </summary>
+    /// <param name="serviceType">The type of the service to retrieve.</param>
+    /// <returns>The retrieved service.</returns>
+    /// <remarks>Throws an exception if the requested service is not registered or unable to be constructed.</remarks>
+    /// <exception cref="NullInjectionException"></exception>
+    public object Get(Type serviceType);
+
+    /// <summary>
+    /// Creates or reuses an instance of type <paramref name="serviceType"/>.
+    /// </summary>
+    /// <param name="serviceType">The type of the service to retrieve.</param>
+    /// <returns>A <see cref="Result{T}"/> object wrapping either the requested service, or an error if retrieval failed.</returns>
+    public Result<object> TryGet(Type serviceType);
+
+    /// <summary>
+    /// Creates or reuses a keyed instance of type <paramref name="serviceType"/>.
+    /// </summary>
+    /// <param name="serviceType">The type of the service to retrieve.</param>
+    /// <param name="key">The key that the service was registered under.</param>
+    /// <returns>The retrieved service.</returns>
+    /// <remarks>Throws an exception if the requested service is not registered or unable to be constructed.</remarks>
+    /// <exception cref="NullInjectionException"></exception>
+    public object GetKeyed(Type serviceType, object key);
+
+    /// <summary>
+    /// Creates or reuses a keyed instance of type <paramref name="serviceType"/>.
+    /// </summary>
+    /// <param name="serviceType">The type of the service to retrieve.</param>
+    /// <param name="key">The key that the service was registered under.</param>
+    /// <returns>A <see cref="Result{T}"/> object wrapping either the requested service, or an error if retrieval failed.</returns>
+    public Result<object> TryGetKeyed(Type serviceType, object key);
+
+    /// <summary>
+    /// Checks whether all registered services are able to be constructed.
+    /// </summary>
+    /// <returns>A result indicating the success or failure of the validation. 
+    /// If validation failed it will hold a <see cref="AggregateError"/> object containing all errors that occurred.</returns>
     public Result Validate();
+
+    /// <summary>
+    /// Creates a new <see cref="IServiceScope"/> based on this scope. It uses the same <see cref="IServiceRegistration"/> and 
+    /// shares the same instances for services with injection type <see cref="InjectionType.Singleton"/>.
+    /// </summary>
+    /// <returns>A new <see cref="IServiceScope"/> based on this scope.</returns>
+    public IServiceScope CreateChildScope();
 }
